@@ -8,9 +8,17 @@ const Order = require('../../models/Order');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
-router.get('/', verify, (req, res) => {
+router.get('/no', verify, (req, res) => {
     Order.find()
         .sort({ date: -1 })
+        .then(orders => res.json(orders));
+});
+//@route GeT api/orders
+//@desc Get all orders
+//@access Public
+router.get('/search', verify, (req, res) => {
+    Order.find({status:req.query.status})
+        .sort({ date: 1 })
         .then(orders => res.json(orders));
 });
 //@route POST api/orders
@@ -22,11 +30,12 @@ router.post('/', verify, (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     const newOrder = new Order({
-        customerId: req.body.customerId,
-        product: req.body.product,
-        quantity: req.body.quantity,
-        price: req.body.price,
-        cash: req.body.cash,
+        userId: req.body.userId,
+        toolId: req.body.toolId,
+        WO: req.body.WO,
+        PCT: req.body.PCT,
+        timeStart: req.body.timeStart,
+        timeStop: req.body.timeStop,
         status: req.body.status,
     });
     newOrder.save()
@@ -51,11 +60,11 @@ router.patch('/:orderId', verify, async (req, res) => {
             { _id: req.params.orderId },
             {
                 $set: {
-                    customerId: req.body.customerId,
-                    product: req.body.product,
-                    quantity: req.body.quantity,
-                    price: req.body.price,
-                    cash: req.body.cash,
+                    userId: req.body.userId,
+                    toolId: req.body.toolId,
+                    WO: req.body.WO,
+                    timeStart: req.body.timeStart,
+                    timeStop: req.body.timeStop,
                     status: req.body.status,
                 }
             })
@@ -64,12 +73,13 @@ router.patch('/:orderId', verify, async (req, res) => {
         res.json({ message: err });
     }
 })
-
+//@route get order by id
 router.get('/:id', verify, (req, res) => {
     Order.findById(req.params.id)
         .then(order => {
             res.json(order)
         })
 })
+
 
 module.exports = router;

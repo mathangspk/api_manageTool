@@ -1,11 +1,13 @@
-
 const Joi = require('joi')
 //register validation
 const resgisterValidation = (data) => {
     const schema = {
         name: Joi.string().min(6).required(),
         email: Joi.string().min(6).required().email(),
-        password: Joi.string().min(6).required()
+        password: Joi.string().min(6).required(),
+        group: Joi.string().min(1).required(),
+        department: Joi.string().min(1).required(),
+        admin: Joi.bool().required(),
     }
     return Joi.validate(data, schema)
 }
@@ -18,7 +20,7 @@ const loginValidation = (data) => {
 }
 const createOrderValidation = (data) => {
     const schema = {
-        customerId: Joi.string().required()
+        userId: Joi.string().required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
@@ -31,64 +33,73 @@ const createOrderValidation = (data) => {
                     }
                 })
             }),
-        tool: Joi.string().min(1).required()
+        toolId: Joi.array().min(1).required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
-                        case "number.min":
+                        case "string.min":
                             return { message: "first msg" };
                         case "string.max":
                             return { message: "second msg" };
                         case "any.empty":
-                            return { message: "Vui lòng chọn sản phẩm" };
+                            return { message: "Vui lòng chọn Tool" };
                     }
                 })
             }),
-        quantity: Joi.number().min(1).required()
+        timeStart: Joi.date().required()
+            .error((errors) => {
+                return errors.map(error => {
+                            return { message: "nhập sai định dạng ngày tháng" };
+                    })
+            }),
+        timeStop: Joi.date().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    return { message: "nhập sai định dạng ngày tháng" };
+                })
+            }),
+        WO: Joi.number().min(100000).required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
                         case "number.min":
-                            return { message: "Số lượng nhỏ nhất là 1" };
+                            return { message: "WO có 6 số" };
                         case "string.max":
                             return { message: "second msg" };
                         case "any.empty":
-                            return { message: "Số lượng không để trống" };
+                            return { message: "Vui lòng nhập WO" };
                     }
                 })
             }),
-        price: Joi.number().min(1).required()
+        PCT: Joi.string().min(1).required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
                         case "number.min":
-                            return { message: "Vui lòng nhập giá sản phẩm" };
+                            return { message: "Vui lòng nhập Số PCT" };
                         case "string.max":
                             return { message: "second msg" };
                         case "any.empty":
-                            return { message: "Số lượng không để trống" };
+                            return { message: "Vui lòng nhập Số PCT" };
                     }
                 })
             }),
-        cash: Joi.number().min(1).required()
+        status: Joi.string().min(1).required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
                         case "number.min":
-                            return { message: "Vui lòng nhập tổng tiền đơn hàng" };
+                            return { message: "Vui lòng chọn trạng thái" };
                         case "string.max":
                             return { message: "second msg" };
                         case "any.empty":
-                            return { message: "Số lượng không để trống" };
+                            return { message: "Vui lòng chọn trạng thái" };
                     }
                 })
             }),
-        status: Joi.string().required()
-
     }
     return Joi.validate(data, schema)
 }
-
 
 const toolValidation = (data) => {
     const schema = {
@@ -114,7 +125,20 @@ const toolValidation = (data) => {
                         case "string.max":
                             return { message: "second msg" };
                         case "any.empty":
-                            return { message: "Mô tả sản phẩm không để trống" };
+                            return { message: "Nhà sản xuất không để trống" };
+                    }
+                })
+            }),
+        type: Joi.string().min(1).required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "number.min":
+                            return { message: "first msg" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn chủng loại" };
                     }
                 })
             }),
@@ -207,6 +231,7 @@ const customerValidation = (data) => {
     }
     return Joi.validate(data, schema)
 }
+
 const postValidation = (data) => {
     const schema = {
             title: Joi.string()

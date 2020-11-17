@@ -19,6 +19,18 @@ const UserSchema = mongoose.Schema({
         max:1024,
         min:6
     },
+    group: {
+        type: String,
+        required:true,
+    },
+    department:{
+        type: String,
+        required: true,
+    },
+    admin:{
+        type: Boolean,
+        required:true,
+    },
     date: {
         type:Date,
         default: Date.now

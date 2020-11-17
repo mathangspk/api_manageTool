@@ -3,24 +3,28 @@ const Schema = mongosee.Schema;
 
 //create Schema 
 const OrderSchema = new Schema({
-    customerId: {
+    userId: {
         type: String,
         required: true
     },
-    product: {               
+    toolId: [{               
+        type: String,
+        required: true
+    }],
+    WO: {
+        type: Number,
+        required: true
+    },
+    PCT: {
         type: String,
         required: true
     },
-    quantity: {
-        type: Number,
+    timeStart: {
+        type: Date,
         required: true
     },
-    price: {
-        type: Number,
-        required: true
-    },
-    cash: {
-        type: Number,
+    timeStop: {
+        type: Date,
         required: true
     },
     status: {

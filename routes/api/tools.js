@@ -13,6 +13,13 @@ router.get('/', verify, (req, res) => {
         .sort({ date: -1 })
         .then(tools => res.json(tools));
 });
+//@skip limit tool
+router.get('/skip', verify, (req, res) => {
+    let count = Number(req.query.count)
+    Tool.find().limit(count).skip(1)
+        .sort({ date: -1 })
+        .then(tools => res.json(tools));
+});
 //@route POST api/tools
 //@desc Create an tools
 //@access Public
@@ -27,6 +34,7 @@ router.post('/', verify, (req, res) => {
         toolId: req.body.toolId,
         name: req.body.name,
         manufacturer: req.body.manufacturer,
+        type: req.body.type,
         quantity: req.body.quantity,
         images: req.body.images,
     });
@@ -58,6 +66,7 @@ router.patch('/:toolId', verify, async (req, res) => {
                     toolId: req.body.toolId,
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,
+                    type: req.body.type,
                     quantity: req.body.quantity,
                     images: req.body.images,
                 }
