@@ -9,7 +9,7 @@ const TOKEN_SECRET = require('./../config/secretToken').secretToken;
 //validation
 //@route get all user 
 router.get('/', verify, (req, res) => {
-  User.find()
+  User.find().select("-password") //ko gui password ra ngoai
       .sort({ date: -1 })
       .then(users => res.json(users));
 });
