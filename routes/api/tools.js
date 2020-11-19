@@ -7,9 +7,19 @@ const Tool = require('../../models/Tool');
 
 //@route GeT api/tools
 //@desc Get all tools
-//@access Public
 router.get('/', verify, (req, res) => {
     Tool.find()
+        .sort({ date: -1 })
+        .then(tools => res.json(tools));
+});
+//@find name
+router.get('/search', verify, (req, res) => {
+    let name = req.query.name;
+    let manufacturer = req.query.manufacturer;
+    Tool.find({
+        name: { '$regex': name },
+        manufacturer: { '$regex': manufacturer }
+    })
         .sort({ date: -1 })
         .then(tools => res.json(tools));
 });
@@ -40,10 +50,10 @@ router.post('/', verify, (req, res) => {
     });
     newTool.save()
         .then(tool => res.json(tool))
-        .catch(err => 
+        .catch(err =>
             //console.log(err.message)
             res.status(400).json(err.errors.toolId.message) //gửi lỗi khi trùng toolID
-            )
+        )
         ;
 })
 
