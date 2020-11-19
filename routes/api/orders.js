@@ -13,11 +13,24 @@ router.get('/no', verify, (req, res) => {
         .sort({ date: -1 })
         .then(orders => res.json(orders));
 });
+
+//@skip -limit-orderby- order
+router.get('', verify, (req, res) => {
+    let limit = Number(req.query.limit)
+    let skip = Number(req.query.skip)
+    req.query.Orderby === 'desc' ? Order.find().limit(limit).skip(skip)
+        .sort({ date: 1 })
+        .then(orders => res.json(orders)):
+    Order.find().limit(limit).skip(skip)
+        .sort({ date: -1 })
+        .then(orders => res.json(orders));
+});
+
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
 router.get('/search', verify, (req, res) => {
-    Order.find({status:req.query.status})
+    Order.find({ status: req.query.status })
         .sort({ date: 1 })
         .then(orders => res.json(orders));
 });
