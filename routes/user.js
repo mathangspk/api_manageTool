@@ -10,9 +10,12 @@ const TOKEN_SECRET = require('./../config/secretToken').secretToken;
 //@route get all user 
 router.get('/', verify, (req, res) => {
   User.find().select("-password") //ko gui password ra ngoai
-      .sort({ date: -1 })
-      .then(users => res.json(users));
+    .sort({ date: -1 })
+    .then(users => res.json(users));
 });
+
+
+//@tao user moi
 router.post("/register", async (req, res) => {
 
   //let validate the data before we a user
@@ -96,22 +99,36 @@ router.post('/login', async (req, res) => {
 router.patch('/:userId', verify, async (req, res) => {
   try {
     //hash pasword
-    console.log('aaa')
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const updateUser = await User.updateOne(
-      { _id: req.params.userId },
-      {
-        $set: {
-          name: req.body.name,
-          email: req.body.email,
-          password: hashedPassword,
-          group: req.body.group,
-          department: req.body.department,
-          admin: req.body.admin
-        }
-      })
-    res.json(updateUser);
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      let hashedPassword = await bcrypt.hash(req.body.password, salt);
+      const updateUser = await User.updateOne(
+        { _id: req.params.userId },
+        {
+          $set: {
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+            group: req.body.group,
+            department: req.body.department,
+            admin: req.body.admin
+          }
+        })
+      res.json(updateUser);
+    } else {
+      const updateUser = await User.updateOne(
+        { _id: req.params.userId },
+        {
+          $set: {
+            name: req.body.name,
+            email: req.body.email,
+            group: req.body.group,
+            department: req.body.department,
+            admin: req.body.admin
+          }
+        })
+      res.json(updateUser);
+    }
   } catch (err) {
     res.json({ message: err });
   }
@@ -126,8 +143,8 @@ router.get('/user', verify, (req, res) => {
 //@access Public
 router.delete('/:id', verify, (req, res) => {
   User.findById(req.params.id)
-      .then(user => user.remove().then(() => res.json({ success: true })))
-      .catch(err => res.status(404).json({ success: false }))
+    .then(user => user.remove().then(() => res.json({ success: true })))
+    .catch(err => res.status(404).json({ success: false }))
 })
 
 module.exports = router;
