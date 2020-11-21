@@ -92,15 +92,22 @@ router.get('/:id', verify, (req, res) => {
     var toolInfo = [];
     Order.findById(req.params.id)
         .then(order => {
-            console.log(order.toolId.length)
-            for (var i = 0; i < order.toolId.length; i++) {
-                Tool.findById(order.toolId[i]).then(tool => {
-                   toolInfo.push(tool)
-                    console.log(tool.name)
-                })
-            }
-            res.json(toolInfo)
+            // let ids = req.query.ids.split(',')
+            // Tool.find({ '_id': { $in: ids } })
+            //     .then(tool => {
+            //         console.log(tool)
+            //         res.json(tool)
+            //     })
+            // console.log(order.toolId.length)
+            // for (var toolId of order.toolId) {
+            //    await  Tool.findById(toolId).then(tool => {
+            //         toolInfo.push(tool)
+            //      console.log(toolInfo)
+            //      })
+            // }
+             res.json(order)
         })
+
 })
 
 
