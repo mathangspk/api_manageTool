@@ -5,7 +5,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 const ToolSchema = mongoose.Schema({
     toolId: {
         type: Number,
-        required: true,
+        required: false,
         unique: true
     },
     name: {

@@ -155,16 +155,12 @@ const toolValidation = (data) => {
                     }
                 })
             }),
-        toolId: Joi.number().min(1).required()
+        toolId: Joi.number()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
                         case "number.min":
                             return { message: "Vui lòng nhập giá sản phẩm" };
-                        case "string.max":
-                            return { message: "second msg" };
-                        case "any.empty":
-                            return { message: "ProductId không để trống" };
                     }
                 })
             }),

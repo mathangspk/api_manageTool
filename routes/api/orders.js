@@ -4,6 +4,7 @@ const { createOrderValidation } = require('../../validation')
 const verify = require('../verifyToken');
 // Order Model
 const Order = require('../../models/Order');
+const Tool = require('../../models/Tool');
 
 //@route GeT api/orders
 //@desc Get all orders
@@ -20,10 +21,10 @@ router.get('', verify, (req, res) => {
     let skip = Number(req.query.skip)
     req.query.Orderby === 'desc' ? Order.find().limit(limit).skip(skip)
         .sort({ date: 1 })
-        .then(orders => res.json(orders)):
-    Order.find().limit(limit).skip(skip)
-        .sort({ date: -1 })
-        .then(orders => res.json(orders));
+        .then(orders => res.json(orders)) :
+        Order.find().limit(limit).skip(skip)
+            .sort({ date: -1 })
+            .then(orders => res.json(orders));
 });
 
 //@route GeT api/orders
@@ -88,9 +89,17 @@ router.patch('/:orderId', verify, async (req, res) => {
 })
 //@route get order by id
 router.get('/:id', verify, (req, res) => {
+    var toolInfo = [];
     Order.findById(req.params.id)
         .then(order => {
-            res.json(order)
+            console.log(order.toolId.length)
+            for (var i = 0; i < order.toolId.length; i++) {
+                Tool.findById(order.toolId[i]).then(tool => {
+                   toolInfo.push(tool)
+                    console.log(tool.name)
+                })
+            }
+            res.json(toolInfo)
         })
 })
 
