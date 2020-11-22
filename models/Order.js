@@ -1,15 +1,15 @@
-const mongosee = require('mongoose');
-const Schema = mongosee.Schema;
-
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Tool = require('../models/Tool');
 //create Schema 
 const OrderSchema = new Schema({
     userId: {
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref:"User"
     },
     toolId: [{               
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref:"Tool"
     }],
     WO: {
         type: Number,
@@ -37,4 +37,4 @@ const OrderSchema = new Schema({
     }
 })
 
-module.exports = Order = mongosee.model('order',OrderSchema)
+module.exports = Order = mongoose.model('order',OrderSchema)

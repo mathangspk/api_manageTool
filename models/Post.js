@@ -1,5 +1,5 @@
-const mongosee = require('mongoose');
-const Schema = mongosee.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 //create Schema 
 const PostSchema = new Schema({
@@ -27,4 +27,4 @@ const PostSchema = new Schema({
     { timestamps: true }
 )
 
-module.exports = Post = mongosee.model('post', PostSchema)
+module.exports = Post = mongoose.model('post', PostSchema)

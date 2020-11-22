@@ -9,23 +9,23 @@ const Tool = require('../../models/Tool');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
-router.get('/no', verify, (req, res) => {
+router.get('/', verify, (req, res) => {
     Order.find()
         .sort({ date: -1 })
         .then(orders => res.json(orders));
 });
 
 //@skip -limit-orderby- order
-router.get('', verify, (req, res) => {
-    let limit = Number(req.query.limit)
-    let skip = Number(req.query.skip)
-    req.query.Orderby === 'desc' ? Order.find().limit(limit).skip(skip)
-        .sort({ date: 1 })
-        .then(orders => res.json(orders)) :
-        Order.find().limit(limit).skip(skip)
-            .sort({ date: -1 })
-            .then(orders => res.json(orders));
-});
+// router.get('', verify, (req, res) => {
+//     let limit = Number(req.query.limit)
+//     let skip = Number(req.query.skip)
+//     req.query.Orderby === 'desc' ? Order.find().limit(limit).skip(skip)
+//         .sort({ date: 1 })
+//         .then(orders => res.json(orders)) :
+//         Order.find().limit(limit).skip(skip)
+//             .sort({ date: -1 })
+//             .then(orders => res.json(orders));
+// });
 
 //@route GeT api/orders
 //@desc Get all orders
@@ -40,8 +40,8 @@ router.get('/search', verify, (req, res) => {
 //@access Public
 router.post('/', verify, (req, res) => {
     //let validate the data before we a user
-    const { error } = createOrderValidation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    //const { error } = createOrderValidation(req.body);
+    //if (error) return res.status(400).send(error.details[0].message);
 
     const newOrder = new Order({
         userId: req.body.userId,
@@ -89,26 +89,20 @@ router.patch('/:orderId', verify, async (req, res) => {
 })
 //@route get order by id
 router.get('/:id', verify, (req, res) => {
-    var toolInfo = [];
-    Order.findById(req.params.id)
+    Order.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v")
         .then(order => {
-            // let ids = req.query.ids.split(',')
-            // Tool.find({ '_id': { $in: ids } })
-            //     .then(tool => {
-            //         console.log(tool)
-            //         res.json(tool)
-            //     })
-            // console.log(order.toolId.length)
-            // for (var toolId of order.toolId) {
-            //    await  Tool.findById(toolId).then(tool => {
-            //         toolInfo.push(tool)
-            //      console.log(toolInfo)
-            //      })
-            // }
              res.json(order)
         })
 
 })
+router.get('/user/:id', verify, (req, res) => {
+    Order.find().populate("userId")
+        .then(order => {
+             res.json(order)
+        })
+
+})
+
 
 
 module.exports = router;

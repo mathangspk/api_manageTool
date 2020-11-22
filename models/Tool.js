@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
-
-var uniqueValidator = require('mongoose-unique-validator');
+const Schema = mongoose.Schema;
 
 const ToolSchema = mongoose.Schema({
-    toolId: {
-        type: Number,
-        required: false,
-        unique: true
-    },
+    // toolId: {
+    //     // type: Number,
+    //     // required: false,
+    //     // unique: true
+    //     type: Schema.Types.ObjectId,
+    //     ref: Order
+    // },
     name: {
         type: String,
         required: true,
@@ -36,7 +37,5 @@ const ToolSchema = mongoose.Schema({
     }
 })
 
-// Apply the uniqueValidator plugin to userSchema.
-ToolSchema.plugin(uniqueValidator,{ message: 'Lỗi, đã có {PATH} = {VALUE}' });
 
 module.exports = mongoose.model('Tool', ToolSchema);

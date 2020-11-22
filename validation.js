@@ -20,20 +20,7 @@ const loginValidation = (data) => {
 }
 const createOrderValidation = (data) => {
     const schema = {
-        userId: Joi.string().required()
-            .error((errors) => {
-                return errors.map(error => {
-                    switch (error.type) {
-                        case "string.min":
-                            return { message: "first msg" };
-                        case "string.max":
-                            return { message: "second msg" };
-                        case "any.empty":
-                            return { message: "Tên khách hàng không để trống" };
-                    }
-                })
-            }),
-        toolId: Joi.array().min(1).required()
+        toolId: Joi.array().min(1)
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
@@ -155,15 +142,15 @@ const toolValidation = (data) => {
                     }
                 })
             }),
-        toolId: Joi.number()
-            .error((errors) => {
-                return errors.map(error => {
-                    switch (error.type) {
-                        case "number.min":
-                            return { message: "Vui lòng nhập giá sản phẩm" };
-                    }
-                })
-            }),
+        // toolId: Joi.number()
+        //     .error((errors) => {
+        //         return errors.map(error => {
+        //             switch (error.type) {
+        //                 case "number.min":
+        //                     return { message: "Vui lòng nhập giá sản phẩm" };
+        //             }
+        //         })
+        //     }),
         status: Joi.number(),
         images: Joi.array(),
     }
