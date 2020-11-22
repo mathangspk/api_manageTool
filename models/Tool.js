@@ -2,13 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ToolSchema = mongoose.Schema({
-    // toolId: {
-    //     // type: Number,
-    //     // required: false,
-    //     // unique: true
-    //     type: Schema.Types.ObjectId,
-    //     ref: Order
-    // },
+    status:{
+        type: Boolean,
+        required: true,
+    },
     name: {
         type: String,
         required: true,

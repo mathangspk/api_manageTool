@@ -142,16 +142,6 @@ const toolValidation = (data) => {
                     }
                 })
             }),
-        // toolId: Joi.number()
-        //     .error((errors) => {
-        //         return errors.map(error => {
-        //             switch (error.type) {
-        //                 case "number.min":
-        //                     return { message: "Vui lòng nhập giá sản phẩm" };
-        //             }
-        //         })
-        //     }),
-        status: Joi.number(),
         images: Joi.array(),
     }
     return Joi.validate(data, schema)

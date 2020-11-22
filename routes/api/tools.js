@@ -23,7 +23,7 @@ router.get('/search', verify, (req, res) => {
         manufacturer: { '$regex': manufacturer }
     })
         .sort({ date: -1 })
-        .then(tools => res.json(tools));
+        .then(tools => res.status(200).json(tools));
 });
 //@skip limit tool
 router.get('/skip', verify, (req, res) => {
@@ -43,7 +43,7 @@ router.post('/', verify, (req, res) => {
     if (error) return res.status(400).json(error.details[0].message);
 
     const newTool = new Tool({
-        toolId: req.body.toolId,
+        status: req.body.status,
         name: req.body.name,
         manufacturer: req.body.manufacturer,
         type: req.body.type,
@@ -75,7 +75,7 @@ router.patch('/:toolId', verify, async (req, res) => {
             { _id: req.params.toolId },
             {
                 $set: {
-                    toolId: req.body.toolId,
+                    status: req.body.status,
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,
                     type: req.body.type,

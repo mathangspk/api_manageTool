@@ -11,7 +11,8 @@ const TOKEN_SECRET = require('./../config/secretToken').secretToken;
 router.get('/', verify, (req, res) => {
   User.find().select("-password") //ko gui password ra ngoai
     .sort({ date: -1 })
-    .then(users => res.json(users));
+    .then(users => res.status(200).json(users))
+    .catch(err => res.status(400).json(err));
 });
 
 
@@ -34,6 +35,7 @@ router.post("/register", async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    phone: req.body.phone,
     group: req.body.group,
     department: req.body.department,
     admin: req.body.admin
@@ -52,6 +54,7 @@ router.post("/register", async (req, res) => {
         id: savedUser.id,
         name: savedUser.name,
         email: savedUser.email,
+        phone: savedUser.phone,
         group: savedUser.group,
         department: savedUser.department,
         admin: savedUser.admin
@@ -87,6 +90,7 @@ router.post('/login', async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       group: user.group,
       department: user.department,
       admin: user.admin,
@@ -108,6 +112,7 @@ router.patch('/:userId', verify, async (req, res) => {
           $set: {
             name: req.body.name,
             email: req.body.email,
+            phone: req.body.phone,
             password: hashedPassword,
             group: req.body.group,
             department: req.body.department,
@@ -122,6 +127,7 @@ router.patch('/:userId', verify, async (req, res) => {
           $set: {
             name: req.body.name,
             email: req.body.email,
+            phone: req.body.phone,
             group: req.body.group,
             department: req.body.department,
             admin: req.body.admin
