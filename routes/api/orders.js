@@ -9,13 +9,16 @@ const Tool = require('../../models/Tool');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
-router.get('/', verify, async (req, res) => {
+router.get('', verify, async (req, res) => {
     var countOrder = await Order.countDocuments({}, (err, count) => {
         return count;
     });
+    let limit = Number(req.query.limit)
+    let skip = Number(req.query.skip)
+
     console.log(countOrder);
     //console.log(countOrder)
-    await Order.find().populate("userId", "-password -__v -date")
+    await Order.find().populate("userId", "-password -__v -date").skip(skip).limit(limit)
         .sort({ date: -1 })
         .then(orders => res.status(200).json(
             {
@@ -41,20 +44,31 @@ router.get('/', verify, async (req, res) => {
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
-router.get('/search', verify, (req, res) => {
+router.get('/search', verify, async (req, res) => {
     console.log(req.query)
     var wo = req.query.wo;
     var pct = req.query.pct;
     var status = req.query.status;
-    Order.find({
-        WO: { '$regex': wo } ,
+    let limit = Number(req.query.limit)
+    let skip = Number(req.query.skip)
+
+    var countOrder = await Order.find({
+        WO: { '$regex': wo },
         PCT: { '$regex': pct },
         status: { '$regex': status }
-    })
+    }).countDocuments({}, (err, count) => {
+        return count;
+    });
+    console.log(countOrder)
+    await Order.find({
+        WO: { '$regex': wo },
+        PCT: { '$regex': pct },
+        status: { '$regex': status }
+    }).skip(skip).limit(limit)
         .sort({ date: -1 })
         .then(orders => res.status(200).json(
             {
-                Data: { Row: orders, Total: orders.length },
+                Data: { Row: orders, Total: countOrder },
                 Status: { StatusCode: 200, Message: 'OK' }
             }
         ));
