@@ -10,9 +10,10 @@ const Tool = require('../../models/Tool');
 //@desc Get all orders
 //@access Public
 router.get('/', verify, (req, res) => {
-    Order.find()
+    Order.find().populate("userId", "-password -__v -date")
         .sort({ date: -1 })
-        .then(orders => res.json(orders));
+        .then(orders => res.status(200).json(orders))
+        .catch(err => res.status(400).json(err));
 });
 
 //@skip -limit-orderby- order
