@@ -12,7 +12,7 @@ const OrderSchema = new Schema({
         ref:"Tool"
     }],
     WO: {
-        type: Number,
+        type: String,
         required: true
     },
     PCT: {

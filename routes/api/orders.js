@@ -9,10 +9,20 @@ const Tool = require('../../models/Tool');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
-router.get('/', verify, (req, res) => {
-    Order.find().populate("userId", "-password -__v -date")
+router.get('/', verify, async (req, res) => {
+    var countOrder = await Order.countDocuments({}, (err, count) => {
+        return count;
+    });
+    console.log(countOrder);
+    //console.log(countOrder)
+    await Order.find().populate("userId", "-password -__v -date")
         .sort({ date: -1 })
-        .then(orders => res.status(200).json(orders))
+        .then(orders => res.status(200).json(
+            {
+                Data: { Row: orders, Total: countOrder },
+                Status: { StatusCode: 200, Message: 'OK' }
+            }
+        ))
         .catch(err => res.status(400).json(err));
 });
 
@@ -32,9 +42,22 @@ router.get('/', verify, (req, res) => {
 //@desc Get all orders
 //@access Public
 router.get('/search', verify, (req, res) => {
-    Order.find({ status: req.query.status })
-        .sort({ date: 1 })
-        .then(orders => res.json(orders));
+    console.log(req.query)
+    var wo = req.query.wo;
+    var pct = req.query.pct;
+    var status = req.query.status;
+    Order.find({
+        WO: { '$regex': wo } ,
+        PCT: { '$regex': pct },
+        status: { '$regex': status }
+    })
+        .sort({ date: -1 })
+        .then(orders => res.status(200).json(
+            {
+                Data: { Row: orders, Total: orders.length },
+                Status: { StatusCode: 200, Message: 'OK' }
+            }
+        ));
 });
 //@route POST api/orders
 //@desc Create an orders
@@ -64,7 +87,8 @@ router.post('/', verify, (req, res) => {
 //@access Public
 router.delete('/:id', verify, (req, res) => {
     Order.findById(req.params.id)
-        .then(order => order.remove().then(() => res.json({ success: true })))
+        .then(order =>
+            console.log(order).then(() => order.remove().then(() => res.json({ success: true }))))
         .catch(err => res.status(404).json({ success: false }))
 })
 
@@ -92,14 +116,14 @@ router.patch('/:orderId', verify, async (req, res) => {
 router.get('/:id', verify, (req, res) => {
     Order.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v")
         .then(order => {
-             res.json(order)
+            res.json(order)
         })
 
 })
 router.get('/user/:id', verify, (req, res) => {
     Order.find().populate("userId")
         .then(order => {
-             res.json(order)
+            res.json(order)
         })
 
 })

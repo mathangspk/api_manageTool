@@ -45,11 +45,11 @@ const createOrderValidation = (data) => {
                     return { message: "nhập sai định dạng ngày tháng" };
                 })
             }),
-        WO: Joi.number().min(100000).required()
+        WO: Joi.string().required()
             .error((errors) => {
                 return errors.map(error => {
                     switch (error.type) {
-                        case "number.min":
+                        case "string.min":
                             return { message: "WO có 6 số" };
                         case "string.max":
                             return { message: "second msg" };
