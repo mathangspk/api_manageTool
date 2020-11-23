@@ -16,8 +16,8 @@ router.get('/', verify, (req, res) => {
 });
 //@find name
 router.get('/search', verify, (req, res) => {
-    let name = req.query.name;
-    let manufacturer = req.query.manufacturer;
+    let name = req.query.name || "";
+    let manufacturer = req.query.manufacturer | "";
     Tool.find({
         name: { '$regex': name },
         manufacturer: { '$regex': manufacturer }
