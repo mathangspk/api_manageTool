@@ -11,13 +11,14 @@ router.get('/', verify, (req, res) => {
     Tool.find()
         .sort({ date: -1 })
         .then(tools => res.json(tools));
-
-
 });
 //@find name
 router.get('/search', verify, (req, res) => {
-    let name = req.query.name || "";
-    let manufacturer = req.query.manufacturer | "";
+    var name = req.query.name;
+    var manufacturer = req.query.manufacturer;
+    console.log(req.query)
+    console.log("name:", name)
+    console.log("manufacturer:", manufacturer)
     Tool.find({
         name: { '$regex': name },
         manufacturer: { '$regex': manufacturer }
