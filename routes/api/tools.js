@@ -16,12 +16,12 @@ router.get('/', verify, (req, res) => {
 router.get('/search', verify, (req, res) => {
     var name = req.query.name;
     var manufacturer = req.query.manufacturer;
-    console.log(req.query)
-    console.log("name:", name)
-    console.log("manufacturer:", manufacturer)
+    var type = req.query.type;
+   
     Tool.find({
         name: { '$regex': name },
-        manufacturer: { '$regex': manufacturer }
+        manufacturer: { '$regex': manufacturer },
+        type: { '$regex': type }
     })
         .sort({ date: -1 })
         .then(tools => res.status(200).json(tools));
