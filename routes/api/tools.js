@@ -43,6 +43,7 @@ router.post('/', verify, (req, res) => {
     if (error) return res.status(400).json(error.details[0].message);
 
     const newTool = new Tool({
+        toodId: req.body.toodId,
         status: req.body.status,
         name: req.body.name,
         manufacturer: req.body.manufacturer,
@@ -69,12 +70,13 @@ router.delete('/:id', verify, (req, res) => {
 })
 
 //update tool
-router.patch('/:toolId', verify, async (req, res) => {
+router.patch('/:id', verify, async (req, res) => {
     try {
         const updateTool = await Tool.updateOne(
-            { _id: req.params.toolId },
+            { _id: req.params.id },
             {
                 $set: {
+                    toodId: req.body.toodId,
                     status: req.body.status,
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,
