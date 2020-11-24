@@ -46,9 +46,9 @@ router.get('', verify, async (req, res) => {
 //@access Public
 router.get('/search', verify, async (req, res) => {
     console.log(req.query)
-    var wo = req.query.wo;
-    var pct = req.query.pct;
-    var status = req.query.status;
+    var wo = req.query.wo || '';
+    var pct = req.query.pct || '';
+    var status = req.query.status !== 'ALL' && req.query.status || '';
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
 
