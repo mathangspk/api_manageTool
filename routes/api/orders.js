@@ -64,7 +64,7 @@ router.get('/search', verify, async (req, res) => {
         WO: { '$regex': wo },
         PCT: { '$regex': pct },
         status: { '$regex': status }
-    }).skip(skip).limit(limit)
+    }).skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
         .then(orders => res.status(200).json(
             {
