@@ -28,33 +28,33 @@ app.use(methodOverride('_method'));
 const db = require('./config/keys').mongoURI;
 
 
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
-    .then(() => {
-        console.log('MogoDB Connected!')
-    })
-    .catch((err) => console.log(err))
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
+  .then(() => {
+    console.log('MogoDB Connected!')
+  })
+  .catch((err) => console.log(err))
 
 //use route
-app.use('/api/orders',orders);
-app.use('/users',userRoute);
-app.use('/api/tools',tool);
-app.use('/api/customers',customer);
-app.use('/api/upload',upload);
-app.use('/api/blogs',post);
+app.use('/api/orders', orders);
+app.use('/users', userRoute);
+app.use('/api/tools', tool);
+app.use('/api/customers', customer);
+app.use('/api/upload', upload);
+app.use('/api/blogs', post);
 
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
-    // Set static folder
-    app.use(express.static('client/build'));
-  
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-    });
-  }
+  // Set static folder
+  app.use(express.static('client/build'));
 
-const port = process.env.PORT || 4000 
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
+const port = process.env.PORT || 4000
 app.listen(port, () => {
-    console.log(`server running.... at ${port}`)
+  console.log(`server running.... at ${port}`)
 })
 console.log('run')

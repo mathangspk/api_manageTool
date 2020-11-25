@@ -116,8 +116,8 @@ router.delete('/:id', verify, async (req, res) => {
             Tool.findByIdAndUpdate(_id, { $set: { status: false } }).then(toolDeleted => {
                 if (!toolDeleted) {
                     return res.status(404).json({ error: "No toolDelete Found" });
-                } else {
-                    res.json({ success: true });
+                } else {;
+                    //res.status(200).json({ success: true });
                 }
             }
             )
@@ -131,6 +131,7 @@ router.delete('/:id', verify, async (req, res) => {
 //update order
 router.patch('/:orderId', verify, async (req, res) => {
     try {
+        var toolId = [];
         const updateOrder = await Order.updateOne(
             { _id: req.params.orderId },
             {
@@ -143,7 +144,25 @@ router.patch('/:orderId', verify, async (req, res) => {
                     status: req.body.status,
                 }
             })
+        
+        const statusComplete = req.body.status;
+        console.log(statusComplete);
+        toolId = req.body.toolId;
+        if (statusComplete == "COMPLETE") {
+            toolId.forEach(tools => {
+                console.log(tools._id)
+                Tool.findByIdAndUpdate(tools._id, { $set: { status: false } }).then(toolDeleted => {
+                    if (!toolDeleted) {
+                        return res.status(404).json({ error: "No toolDelete Found" });
+                    } else {;
+                        //res.status(200).json({ success: true });
+                    }
+                })
+
+            })
+        };
         res.json(updateOrder);
+        console.log(toolId);
     } catch (err) {
         res.json({ message: err });
     }
