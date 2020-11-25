@@ -99,11 +99,33 @@ router.post('/', verify, (req, res) => {
 //@route DELETE api/orders:id
 //@desc delete an orders
 //@access Public
-router.delete('/:id', verify, (req, res) => {
-    Order.findById(req.params.id)
-        .then(order =>
-            console.log(order).then(() => order.remove().then(() => res.json({ success: true }))))
-        .catch(err => res.status(404).json({ success: false }))
+router.delete('/:id', verify, async (req, res) => {
+    try {
+        var toolId = [];
+        await Order.findByIdAndDelete({ _id: req.params.id }).then(wo => {
+            if (!wo) {
+                return res.status(404).json({ error: "No Wo Found" });
+            }
+            else {
+                toolId = wo.toolId;
+                res.json(wo);
+            }
+        })
+        console.log(toolId);
+        toolId.forEach(_id => {
+            Tool.findByIdAndUpdate(_id, { $set: { status: false } }).then(toolDeleted => {
+                if (!toolDeleted) {
+                    return res.status(404).json({ error: "No toolDelete Found" });
+                } else {
+                    res.json({ success: true });
+                }
+            }
+            )
+        })
+    }
+    catch (err) {
+        res.status(404).json({ success: false })
+    }
 })
 
 //update order

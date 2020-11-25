@@ -70,6 +70,10 @@ router.post('/', verify,  async (req, res) => {
 //@desc delete an orders
 //@access Public
 router.delete('/:id', verify, (req, res) => {
+    
+
+
+
     Tool.findById(req.params.id)
         .then(tool => tool.remove().then(() => res.json({ success: true })))
         .catch(err => res.status(404).json({ success: false }))
