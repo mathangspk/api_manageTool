@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ToolSchema = mongoose.Schema({
-    toolId:{
-        type:Number
-    },
     status:{
         type: Boolean,
         required: true,

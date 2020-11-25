@@ -39,13 +39,12 @@ router.get('/skip', verify, (req, res) => {
 router.post('/', verify, (req, res) => {
     //let validate the data before we a user
     console.log(req.body)
-    const { error } = toolValidation(req.body);
-    console.log(error);
-    if (error) return res.status(400).json(error.details[0].message);
+    //const { error } = toolValidation(req.body);
+    //console.log(error);
+    //if (error) return res.status(400).json(error.details[0].message);
 
     const newTool = new Tool({
-        toodId: req.body.toodId,
-        status: req.body.status,
+        status: Boolean(req.body.status),
         name: req.body.name,
         manufacturer: req.body.manufacturer,
         type: req.body.type,
@@ -56,7 +55,8 @@ router.post('/', verify, (req, res) => {
         .then(tool => res.json(tool))
         .catch(err =>
             //console.log(err.message)
-            res.status(400).json(err.errors.toolId.message) //gửi lỗi khi trùng toolID
+            //res.status(400).json(err.errors.toolId.message) //gửi lỗi khi trùng toolID
+            res.status(400).json(err) //gửi lỗi khi trùng toolID
         )
         ;
 })
