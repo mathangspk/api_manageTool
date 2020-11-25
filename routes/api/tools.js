@@ -14,9 +14,9 @@ router.get('/', verify, (req, res) => {
 });
 //@find name
 router.get('/search', verify, (req, res) => {
-    var name = req.query.name;
-    var manufacturer = req.query.manufacturer;
-    var type = req.query.type;
+    var name = req.query.name || '';
+    var manufacturer = req.query.manufacturer || '';
+    var type = req.query.type || '';
    
     Tool.find({
         name: { '$regex': name },
@@ -36,22 +36,27 @@ router.get('/skip', verify, (req, res) => {
 //@route POST api/tools
 //@desc Create an tools
 //@access Public
-router.post('/', verify, (req, res) => {
+router.post('/', verify,  async (req, res) => {
     //let validate the data before we a user
+    var reqStatus = req.body.status;
     console.log(req.body)
-    //const { error } = toolValidation(req.body);
+    function getStatus(reqStatus){
+        return (reqStatus == "0" ? false:true)
+    }
+    console.log(getStatus(reqStatus))
+   // const { error } = toolValidation(req.body);
     //console.log(error);
     //if (error) return res.status(400).json(error.details[0].message);
 
     const newTool = new Tool({
-        status: Boolean(req.body.status),
+        status: Boolean(getStatus(reqStatus)),
         name: req.body.name,
         manufacturer: req.body.manufacturer,
         type: req.body.type,
         quantity: req.body.quantity,
         images: req.body.images,
     });
-    newTool.save()
+    await newTool.save()
         .then(tool => res.json(tool))
         .catch(err =>
             //console.log(err.message)
@@ -77,7 +82,6 @@ router.patch('/:id', verify, async (req, res) => {
             { _id: req.params.id },
             {
                 $set: {
-                    toodId: req.body.toodId,
                     status: req.body.status,
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,

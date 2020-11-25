@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-const ToolSchema = mongoose.Schema({
+const ToolSchema = Schema({
     status:{
         type: Boolean,
         required: true,
@@ -9,7 +8,6 @@ const ToolSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
-        min:6
     },
     manufacturer: {
         type: String,
@@ -33,6 +31,4 @@ const ToolSchema = mongoose.Schema({
         default: Date.now
     }
 })
-
-
 module.exports = mongoose.model('Tool', ToolSchema);
