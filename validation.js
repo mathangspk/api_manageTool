@@ -71,6 +71,19 @@ const createOrderValidation = (data) => {
                     }
                 })
             }),
+        content: Joi.string().min(1).required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "number.min":
+                            return { message: "Vui lòng nhập Số PCT" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập Số PCT" };
+                    }
+                })
+            }),
         status: Joi.string().min(1).required()
             .error((errors) => {
                 return errors.map(error => {

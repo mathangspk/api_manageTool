@@ -15,6 +15,9 @@ const OrderSchema = new Schema({
         type: String,
         required: true
     },
+    content:{
+        type: String,
+    },
     PCT: {
         type: String,
         required: true

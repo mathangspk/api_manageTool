@@ -48,6 +48,7 @@ router.get('/search', verify, async (req, res) => {
     console.log(req.query)
     var wo = req.query.wo || '';
     var pct = req.query.pct || '';
+    var content = req.query.content || '';
     var status = req.query.status !== 'ALL' && req.query.status || '';
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
@@ -55,7 +56,8 @@ router.get('/search', verify, async (req, res) => {
     var countOrder = await Order.find({
         WO: { '$regex': wo },
         PCT: { '$regex': pct },
-        status: { '$regex': status }
+        status: { '$regex': status },
+        content: { '$regex': content }
     }).countDocuments({}, (err, count) => {
         return count;
     });
@@ -86,6 +88,7 @@ router.post('/', verify, (req, res) => {
         toolId: req.body.toolId,
         WO: req.body.WO,
         PCT: req.body.PCT,
+        content: req.body.content,
         timeStart: req.body.timeStart,
         timeStop: req.body.timeStop,
         status: req.body.status,
@@ -139,6 +142,8 @@ router.patch('/:orderId', verify, async (req, res) => {
                     userId: req.body.userId,
                     toolId: req.body.toolId,
                     WO: req.body.WO,
+                    PCT: req.body.PCT,
+                    content: req.body.content,
                     timeStart: req.body.timeStart,
                     timeStop: req.body.timeStop,
                     status: req.body.status,
