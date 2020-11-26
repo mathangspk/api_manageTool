@@ -86,7 +86,7 @@ router.patch('/:id', verify, async (req, res) => {
             { _id: req.params.id },
             {
                 $set: {
-                    status: Boolean(req.body.status),
+                    status: parseInt(req.body.status),
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,
                     type: req.body.type,
