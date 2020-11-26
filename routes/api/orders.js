@@ -65,7 +65,8 @@ router.get('/search', verify, async (req, res) => {
     await Order.find({
         WO: { '$regex': wo },
         PCT: { '$regex': pct },
-        status: { '$regex': status }
+        status: { '$regex': status },
+        content: { '$regex': content }
     }).skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
         .then(orders => res.status(200).json(
@@ -178,16 +179,11 @@ router.get('/:id', verify, (req, res) => {
         .then(order => {
             res.json(order)
         })
-
 })
 router.get('/user/:id', verify, (req, res) => {
     Order.find().populate("userId")
         .then(order => {
             res.json(order)
         })
-
 })
-
-
-
 module.exports = router;
