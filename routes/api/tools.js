@@ -14,16 +14,17 @@ router.get('/', verify, (req, res) => {
 });
 //@find name
 router.get('/search', verify, (req, res) => {
+    console.log(req.query)
     var name = req.query.name || '';
     var manufacturer = req.query.manufacturer || '';
     var type = req.query.type || '';
-    var status = req.query.status || '';
+    var status = req.query.status || [1,2,3,4];
    
     Tool.find({
         name: { '$regex': name },
         manufacturer: { '$regex': manufacturer },
         type: { '$regex': type },
-        status: { '$regex': status }
+        status: { '$in': status }
     })
         .sort({ date: -1 })
         .then(tools => res.status(200).json(tools));
