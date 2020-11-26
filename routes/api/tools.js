@@ -17,11 +17,13 @@ router.get('/search', verify, (req, res) => {
     var name = req.query.name || '';
     var manufacturer = req.query.manufacturer || '';
     var type = req.query.type || '';
+    var status = req.query.status || '';
    
     Tool.find({
         name: { '$regex': name },
         manufacturer: { '$regex': manufacturer },
-        type: { '$regex': type }
+        type: { '$regex': type },
+        status: { '$regex': status }
     })
         .sort({ date: -1 })
         .then(tools => res.status(200).json(tools));
@@ -70,10 +72,6 @@ router.post('/', verify,  async (req, res) => {
 //@desc delete an orders
 //@access Public
 router.delete('/:id', verify, (req, res) => {
-    
-
-
-
     Tool.findById(req.params.id)
         .then(tool => tool.remove().then(() => res.json({ success: true })))
         .catch(err => res.status(404).json({ success: false }))
@@ -82,11 +80,12 @@ router.delete('/:id', verify, (req, res) => {
 //update tool
 router.patch('/:id', verify, async (req, res) => {
     try {
+        console.log(req.body)
         const updateTool = await Tool.updateOne(
             { _id: req.params.id },
             {
                 $set: {
-                    status: req.body.status,
+                    status: Boolean(req.body.status),
                     name: req.body.name,
                     manufacturer: req.body.manufacturer,
                     type: req.body.type,

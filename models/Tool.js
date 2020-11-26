@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ToolSchema = Schema({
     status:{
-        type: Boolean,
+        type: Number,
         required: true,
     },
     name: {

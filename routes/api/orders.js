@@ -117,7 +117,7 @@ router.delete('/:id', verify, async (req, res) => {
         })
         console.log(toolId);
         toolId.forEach(_id => {
-            Tool.findByIdAndUpdate(_id, { $set: { status: false } }).then(toolDeleted => {
+            Tool.findByIdAndUpdate(_id, { $set: { status: 1 } }).then(toolDeleted => {
                 if (!toolDeleted) {
                     return res.status(404).json({ error: "No toolDelete Found" });
                 } else {;
@@ -157,7 +157,7 @@ router.patch('/:orderId', verify, async (req, res) => {
         if (statusComplete == "COMPLETE") {
             toolId.forEach(tools => {
                 console.log(tools._id)
-                Tool.findByIdAndUpdate(tools._id, { $set: { status: false } }).then(toolDeleted => {
+                Tool.findByIdAndUpdate(tools._id, { $set: { status: 1 } }).then(toolDeleted => {
                     if (!toolDeleted) {
                         return res.status(404).json({ error: "No toolDelete Found" });
                     } else {;
