@@ -9,6 +9,7 @@ const TOKEN_SECRET = require('./../config/secretToken').secretToken;
 //validation
 //@route get all user 
 router.get('/', verify, (req, res) => {
+  console.log('alooooo')
   User.find().select("-password") //ko gui password ra ngoai
     .sort({ date: -1 })
     .then(users => res.status(200).json(users))
@@ -68,7 +69,7 @@ router.post("/register", async (req, res) => {
 })
 //login
 router.post('/login', async (req, res) => {
-
+  console.log('login')
   //let validate the data before we a user
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -140,6 +141,7 @@ router.patch('/:userId', verify, async (req, res) => {
   }
 })
 router.get('/user', verify, (req, res) => {
+  console.log("sdfdf")
   User.findById(req.user._id)
     .select("-password") //ko gui password ra ngoai
     .then(user => {

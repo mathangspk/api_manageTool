@@ -5,7 +5,7 @@ const verify = require('../verifyToken');
 // Order Model
 const Order = require('../../models/Order');
 const Tool = require('../../models/Tool');
-
+const mongoose = require('mongoose');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
@@ -45,29 +45,25 @@ router.get('', verify, async (req, res) => {
 //@desc Get all orders
 //@access Public
 router.get('/search', verify, async (req, res) => {
-    console.log(req.query)
-    var wo = req.query.wo || '';
-    var pct = req.query.pct || '';
-    var content = req.query.content || '';
-    var status = req.query.status !== 'ALL' && req.query.status || '';
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
+    let paramsQuery = {
+        WO: { '$regex': req.query.wo || '' },
+        PCT: { '$regex': req.query.pct || '' },
+        status: { '$regex': req.query.status !== 'ALL' && req.query.status || '' },
+        content: { '$regex': req.query.content || '' }
+    }
+    if (req.query.userId) {
+        paramsQuery.userId = { '$in': req.query.userId.split(',') }
+    }
 
-    var countOrder = await Order.find({
-        WO: { '$regex': wo },
-        PCT: { '$regex': pct },
-        status: { '$regex': status },
-        content: { '$regex': content }
-    }).countDocuments({}, (err, count) => {
-        return count;
-    });
+    var countOrder = await Order.find(paramsQuery)
+        .countDocuments({}, (err, count) => {
+            return count;
+        });
     console.log(countOrder)
-    await Order.find({
-        WO: { '$regex': wo },
-        PCT: { '$regex': pct },
-        status: { '$regex': status },
-        content: { '$regex': content }
-    }).skip(skip).limit(limit).populate("userId", "-password -__v -date")
+    await Order.find(paramsQuery)
+        .skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
         .then(orders => res.status(200).json(
             {
@@ -120,7 +116,8 @@ router.delete('/:id', verify, async (req, res) => {
             Tool.findByIdAndUpdate(_id, { $set: { status: 1 } }).then(toolDeleted => {
                 if (!toolDeleted) {
                     return res.status(404).json({ error: "No toolDelete Found" });
-                } else {;
+                } else {
+                    ;
                     //res.status(200).json({ success: true });
                 }
             }
@@ -150,7 +147,7 @@ router.patch('/:orderId', verify, async (req, res) => {
                     status: req.body.status,
                 }
             })
-        
+
         const statusComplete = req.body.status;
         console.log(statusComplete);
         toolId = req.body.toolId;
@@ -160,7 +157,8 @@ router.patch('/:orderId', verify, async (req, res) => {
                 Tool.findByIdAndUpdate(tools._id, { $set: { status: 1 } }).then(toolDeleted => {
                     if (!toolDeleted) {
                         return res.status(404).json({ error: "No toolDelete Found" });
-                    } else {;
+                    } else {
+                        ;
                         //res.status(200).json({ success: true });
                     }
                 })
