@@ -22,8 +22,6 @@ const UserSchema = mongoose.Schema({
     phone:{
         type: Number,
         required: true,
-        max:1024,
-        min:6
     },
     group: {
         type: String,

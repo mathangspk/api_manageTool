@@ -4,6 +4,7 @@ const resgisterValidation = (data) => {
     const schema = {
         name: Joi.string().min(6).required(),
         email: Joi.string().min(6).required().email(),
+        phone: Joi.number().required(),
         password: Joi.string().min(6).required(),
         group: Joi.string().min(1).required(),
         department: Joi.string().min(1).required(),
