@@ -8,9 +8,25 @@ const Tool = require('../../models/Tool');
 //@route GeT api/tools
 //@desc Get all tools
 router.get('/', verify, (req, res) => {
-    Tool.find()
-        .sort({ date: -1 })
-        .then(tools => res.json(tools));
+    Tool.aggregate([
+        { $project : {
+            _id : 1,
+            userId: 1
+          }
+        },
+        { $lookup : {
+            "from" : "orders",
+            "localField" : "_id",
+            "foreignField" : "toolId",
+            "as" : "woInfo"      
+          }
+        }
+      ]).then(tools => res.json(tools));
+
+
+    // Tool.find()
+    //     .sort({ date: -1 })
+    //     .then(tools => res.json(tools));
 });
 //@find name
 router.get('/search', verify, (req, res) => {
