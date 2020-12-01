@@ -9,11 +9,11 @@ const Tool = require('../../models/Tool');
 //@desc Get all tools
 router.get('/', verify, (req, res) => {
     Tool.aggregate([
-        { $project : {
-            _id : 1,
-            userId: 1
-          }
-        },
+        // { $project : {
+        //     _id : 1,
+        //     userId: 1
+        //   }
+        // },
         { $lookup : {
             "from" : "orders",
             "localField" : "_id",
