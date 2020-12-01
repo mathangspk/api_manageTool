@@ -8,26 +8,64 @@ const Tool = require('../../models/Tool');
 //@route GeT api/tools
 //@desc Get all tools
 router.get('/', verify, (req, res) => {
-    Tool.aggregate([
-        // { $project : {
-        //     _id : 1,
-        //     userId: 1
-        //   }
-        // },
-        { $lookup : {
-            "from" : "orders",
-            "localField" : "_id",
-            "foreignField" : "toolId",
-            "as" : "woInfo"      
-          }
-        }
-      ]).then(tools => res.json(tools));
-
+    // Tool.aggregate([
+    //     // { $project : {
+    //     //     _id : 1,
+    //     //     userId: 1
+    //     //   }
+    //     // },
+    //     { $lookup : {
+    //         "from" : "orders",
+    //         "localField" : "_id",
+    //         "foreignField" : "toolId",
+    //         "as" : "woInfo"      
+    //       }
+    //     },
+    //     {
+    //         $unwind: "$woInfo"
+    //     },
+    //     {
+    //         $lookup: {
+    //             "from": "users",
+    //             "localField": "woInfo.userId",
+    //             "foreignField": "_id",
+    //             "as": "woInfo.detail"
+    //         }
+    //     }
+    //   ]).then(tools => res.json(tools));
+        Tool.aggregate([
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { id: "$_id" },
+                    pipeline: [
+                        { $match: { $expr: { $in: ["$$id", "$toolId"] } } },
+                        {
+                            $lookup: {
+                                from: "users",
+                                let: { id: "$userId" },
+                                pipeline: [
+                                    { $match: { $expr: { $eq: ["$$id", "$_id"] } } },
+                                    { $project : {
+                                        _id : 1,
+                                        name: 1
+                                      }
+                                    }
+                                ],
+                                as: "userInfo"
+                            }
+                        },
+                        { $unwind: "$userInfo" }
+                    ],
+                    as: "woInfo"
+                }
+            }
+        ]).then(tools => res.json(tools));
+    });
 
     // Tool.find()
     //     .sort({ date: -1 })
     //     .then(tools => res.json(tools));
-});
 //@find name
 router.get('/search', verify, (req, res) => {
     console.log(req.query)
