@@ -72,6 +72,10 @@ router.get('/search', verify, async (req, res) => {
             }
         ));
 });
+//@route GET api/orders/typeoftool
+router.get('/typeoftool', verify, (req, res) => {
+    
+});
 //@route POST api/orders
 //@desc Create an orders
 //@access Public
