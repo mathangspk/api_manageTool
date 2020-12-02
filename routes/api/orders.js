@@ -74,7 +74,11 @@ router.get('/search', verify, async (req, res) => {
 });
 //@route GET api/orders/typeoftool
 router.get('/typeoftool', verify, (req, res) => {
-    
+    Order.find()
+        .sort({ date: -1 })
+        .then(orders => res.status(200).json(
+            orders
+        ));
 });
 //@route POST api/orders
 //@desc Create an orders
