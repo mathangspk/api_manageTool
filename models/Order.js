@@ -5,7 +5,8 @@ const Tool = require('../models/Tool');
 const OrderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required: true,
     },
     toolId: [{               
         type: Schema.Types.ObjectId,

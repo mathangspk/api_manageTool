@@ -21,6 +21,19 @@ const loginValidation = (data) => {
 }
 const createOrderValidation = (data) => {
     const schema = {
+        userId: Joi.object().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "first msg" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "no userId" };
+                    }
+                })
+            }),
         toolId: Joi.array().min(1)
             .error((errors) => {
                 return errors.map(error => {
