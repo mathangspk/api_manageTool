@@ -5,7 +5,6 @@ const verify = require('../verifyToken');
 // Order Model
 const Order = require('../../models/Order');
 const Tool = require('../../models/Tool');
-const mongoose = require('mongoose');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
@@ -61,7 +60,6 @@ router.get('/search', verify, async (req, res) => {
         .countDocuments({}, (err, count) => {
             return count;
         });
-    console.log(countOrder)
     await Order.find(paramsQuery)
         .skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
@@ -72,12 +70,23 @@ router.get('/search', verify, async (req, res) => {
             }
         ));
 });
-//@route GET api/orders/typeoftool
-router.get('/typeoftool', verify, (req, res) => {
-    Order.find()
+//@route Get api/order/collect-tools
+//@desc Get all api/order/collect-tools
+router.get('/collect-tools', verify, (req, res) => {
+    let startDate = new Date(req.query.startDate)
+    let endDate = new Date(req.query.endDate)
+    queryParams = {
+        timeStart: { $gte: startDate, $lte: endDate }
+    }
+    Order.find(queryParams)
+        .populate("toolId")
+        .populate("userId", "-password -__v -date")
         .sort({ date: -1 })
-        .then(orders => res.status(200).json(
-            orders
+        .then(tools => res.status(200).json(
+            {
+                Data: { Row: tools, Total: tools.length },
+                Status: { StatusCode: 200, Message: 'OK' }
+            }
         ));
 });
 //@route POST api/orders
