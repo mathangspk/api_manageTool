@@ -40,8 +40,6 @@ router.get('/', verify, (req, res) => {
 });
 //@find name
 router.get('/search', verify, async (req, res) => {
-    let limit = Number(req.query.limit)
-    let skip = Number(req.query.skip)
     let aggregate = [
         { $match: { name: { $regex: req.query.name || '' } } },
         { $match: { manufacturer: { $regex: req.query.manufacturer || '' } } },
@@ -77,16 +75,7 @@ router.get('/search', verify, async (req, res) => {
             as: "woInfo"
         }
     })
-    var countTool = await Tool.aggregate(aggregate)
-        .countDocuments({}, (err, count) => {
-            return count;
-        });
-    await Tool.aggregate(aggregate).skip(skip).limit(limit).sort({ date: -1 }).then(tools => res.status(200).json(
-        {
-            Data: { Row: tools, Total: countTool },
-            Status: { StatusCode: 200, Message: 'OK' }
-        }
-    ));
+    await Tool.aggregate(aggregate).sort({ date: -1 }).then(tools => res.json(tools));
 });
 //@skip limit tool
 router.get('/skip', verify, (req, res) => {
