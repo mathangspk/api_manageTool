@@ -97,22 +97,32 @@ router.get('/collect-tools', verify, (req, res) => {
 //@route POST api/orders
 //@desc Create an orders
 //@access Public
-router.post('/', verify, (req, res) => {
+router.post('/', verify, async (req, res) => {
     //let validate the data before we a user
     //const { error } = createOrderValidation(req.body);
     //if (error) return res.status(400).send(error.details[0].message);
 
 let date = new Date();
 let month = date.getMonth();
+console.log(month)
 let year = String(date.getFullYear()).slice(2,4);
-let pct = "12/12/20";
-console.log(pct);
-
+let pct = "14/11/20";
+//console.log(pct);
+let lastWo = await Order.findOne({}, {}, { sort: { 'date' : -1 } }, function(err, order) {
+    return order;
+  });
+  console.log(lastWo.PCT)
+ let pctLast = await lastWo.PCT.split("/")
+ console.log(pctLast)
+ let numberPctLast = Number(pctLast[0]) + 1;
+ console.log(numberPctLast);
+ let pct1 = String(numberPctLast).concat("/",String(month+1),"/",String(year));
+ console.log("sdfd:"+pct1)
     const newOrder = new Order({
         userId: req.body.userId,
         toolId: req.body.toolId,
         WO: req.body.WO,
-        PCT: pct,
+        PCT: pct1,
         content: req.body.content,
         timeStart: req.body.timeStart,
         timeStop: req.body.timeStop,
