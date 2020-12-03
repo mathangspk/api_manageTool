@@ -11,8 +11,6 @@ const jwt = require('jsonwebtoken');
 //@desc Get all orders
 //@access Public
 router.get('', verify, async (req, res) => {
-    let token = req.headers['auth-token']
-    console.log(jwt.verify(token, TOKEN_SECRET))
     var countOrder = await Order.countDocuments({}, (err, count) => {
         return count;
     });
@@ -48,6 +46,8 @@ router.get('', verify, async (req, res) => {
 //@desc Get all orders
 //@access Public
 router.get('/search', verify, async (req, res) => {
+    let token = req.headers['auth-token']
+    console.log(jwt.verify(token, TOKEN_SECRET))
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
