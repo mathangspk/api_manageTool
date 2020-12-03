@@ -9,7 +9,6 @@ const TOKEN_SECRET = require('./../config/secretToken').secretToken;
 //validation
 //@route get all user 
 router.get('/', verify, (req, res) => {
-  console.log('alooooo')
   User.find().select("-password") //ko gui password ra ngoai
     .sort({ date: -1 })
     .then(users => res.status(200).json(users))
@@ -83,7 +82,7 @@ router.post('/login', async (req, res) => {
   if (!validPass) return res.status(400).send('Invalid password');
 
   //create and assign a token
-  const token = jwt.sign({ _id: user._id }, TOKEN_SECRET);
+  const token = jwt.sign({ _id: user._id, admin: user.admin }, TOKEN_SECRET);
   console.log(token)
   res.status(200).json({
     token,

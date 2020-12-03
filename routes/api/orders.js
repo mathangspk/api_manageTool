@@ -5,10 +5,14 @@ const verify = require('../verifyToken');
 // Order Model
 const Order = require('../../models/Order');
 const Tool = require('../../models/Tool');
+const TOKEN_SECRET = require('../../config/secretToken').secretToken;
+const jwt = require('jsonwebtoken');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
 router.get('', verify, async (req, res) => {
+    let token = req.headers['auth-token']
+    console.log(jwt.verify(token, TOKEN_SECRET))
     var countOrder = await Order.countDocuments({}, (err, count) => {
         return count;
     });
