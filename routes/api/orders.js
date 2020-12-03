@@ -7,6 +7,7 @@ const Order = require('../../models/Order');
 const Tool = require('../../models/Tool');
 const TOKEN_SECRET = require('../../config/secretToken').secretToken;
 const jwt = require('jsonwebtoken');
+const { concat } = require('joi');
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
@@ -101,11 +102,17 @@ router.post('/', verify, (req, res) => {
     //const { error } = createOrderValidation(req.body);
     //if (error) return res.status(400).send(error.details[0].message);
 
+let date = new Date();
+let month = date.getMonth();
+let year = String(date.getFullYear()).slice(2,4);
+let pct = "12/12/20";
+console.log(pct);
+
     const newOrder = new Order({
         userId: req.body.userId,
         toolId: req.body.toolId,
         WO: req.body.WO,
-        PCT: req.body.PCT,
+        PCT: pct,
         content: req.body.content,
         timeStart: req.body.timeStart,
         timeStop: req.body.timeStop,
