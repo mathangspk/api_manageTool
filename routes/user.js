@@ -140,7 +140,6 @@ router.patch('/:userId', verify, async (req, res) => {
   }
 })
 router.get('/user', verify, (req, res) => {
-  console.log("sdfdf")
   User.findById(req.user._id)
     .select("-password") //ko gui password ra ngoai
     .then(user => {

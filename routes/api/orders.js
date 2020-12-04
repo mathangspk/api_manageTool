@@ -248,7 +248,7 @@ router.patch('/:orderId', verify, async (req, res) => {
 })
 //@route get order by id
 router.get('/:id', verify, (req, res) => {
-    Order.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v")
+    Order.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v").populate("NV", "-password -__v")
         .then(order => {
             res.json(order)
         })

@@ -24,7 +24,8 @@ const OrderSchema = new Schema({
         required: true
     },
     NV: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:"User"
     }],
     timeStart: {
         type: Date,
