@@ -23,6 +23,9 @@ const OrderSchema = new Schema({
         type: String,
         required: true
     },
+    NV: [{
+        type: String,
+    }],
     timeStart: {
         type: Date,
         required: true
