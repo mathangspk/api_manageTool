@@ -26,6 +26,9 @@ const ToolSchema = Schema({
             type: String,
         }
     }],
+    currentUser:{
+        type: String,
+    },
     date: {
         type:Date,
         default: Date.now

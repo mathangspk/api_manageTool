@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { toolValidation } = require('../../validation')
 const verify = require('../verifyToken');
+const TOKEN_SECRET = require('../../config/secretToken').secretToken;
+const jwt = require('jsonwebtoken');
 // Order Model
 const Tool = require('../../models/Tool');
 
@@ -129,20 +131,78 @@ router.delete('/:id', verify, (req, res) => {
 //update tool
 router.patch('/:id', verify, async (req, res) => {
     try {
-        console.log(req.body)
-        const updateTool = await Tool.updateOne(
-            { _id: req.params.id },
-            {
-                $set: {
-                    status: parseInt(req.body.status),
-                    name: req.body.name,
-                    manufacturer: req.body.manufacturer,
-                    type: req.body.type,
-                    quantity: req.body.quantity,
-                    images: req.body.images,
-                }
-            })
-        res.json(updateTool);
+        let token = await req.headers['auth-token']
+        let tokenUser = await jwt.verify(token, TOKEN_SECRET); //get current user from token
+        let currentUser = tokenUser._id;
+        let adminUser = tokenUser.admin;
+        let tool = await Tool.findById(req.params.id)
+        //when user add tool
+        if (tool.status === 1) { //check status tool is READY
+            console.log("tool READY")
+            await Tool.updateOne(
+                { _id: req.params.id },
+                {
+                    $set: {
+                        status: parseInt(req.body.status),
+                        name: req.body.name,
+                        manufacturer: req.body.manufacturer,
+                        type: req.body.type,
+                        quantity: req.body.quantity,
+                        currentUser: currentUser,
+                        images: req.body.images,
+                    }
+                }).then(tool => res.status(200).json(
+                    {
+                        Data: { Row: tool },
+                        Status: { StatusCode: 200, Message: 'OK' }
+                    }));
+     
+
+        }
+        if (tool.status === 2 && tool.currentUser === currentUser) {
+            console.log("it me remove tool from list")
+
+            await Tool.updateOne(
+                { _id: req.params.id },
+                {
+                    $set: {
+                        status: parseInt(req.body.status),
+                        name: req.body.name,
+                        manufacturer: req.body.manufacturer,
+                        type: req.body.type,
+                        quantity: req.body.quantity,
+                        images: req.body.images,
+                    }
+                }).then(tool => res.status(200).json(
+                    {
+                        Data: { Row: tool },
+                        Status: { StatusCode: 200, Message: 'OK' }
+                    }));
+        }
+        if ( ((tool.status === 3 || tool.status === 4) && adminUser === true)) {
+            console.log("the tool after to fix")
+
+            await Tool.updateOne(
+                { _id: req.params.id },
+                {
+                    $set: {
+                        status: parseInt(req.body.status),
+                        name: req.body.name,
+                        manufacturer: req.body.manufacturer,
+                        type: req.body.type,
+                        quantity: req.body.quantity,
+                        images: req.body.images,
+                    }
+                }).then(tool => res.status(200).json(
+                    {
+                        Data: { Row: tool },
+                        Status: { StatusCode: 200, Message: 'OK' }
+                    }));
+        }
+        else {
+            res.status(500).json({ message: "Tool đã được sử dụng" })
+        }
+
     } catch (err) {
         res.json({ message: err });
     }
