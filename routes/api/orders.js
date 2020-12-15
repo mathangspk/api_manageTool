@@ -104,72 +104,33 @@ router.post('/', verify, async (req, res) => {
 
     let date = new Date();
     let month = date.getMonth();
-    let realMonth = month + 1;
-    let year = String(date.getFullYear()).slice(2, 4);
-    let realYear = Number(year);
-    let pct = "14/11/20";
+    let year = (date.getFullYear() + '').slice(2, 4);
+    let pct = "01/11/20";
     let lastWo = await Order.findOne({}, {}, { sort: { 'date': -1 } }, function (err, order) {
         return order;
     });
 
     if (lastWo != null) {
         let pctLast = await lastWo.PCT.split("/")
-        let numberPctLast = Number(pctLast[0]) + 1;
-        let monthPCTLast = Number(pctLast[1]);
-        let yearPCTLast = Number(pctLast[2]);
-        let pct1;
-        if (yearPCTLast != realYear) {
-            if (monthPCTLast != realMonth) {
-                pct1 = String(1).concat("/", String(month + 1), "/", String(realYear));
-            } else {
-                pct1 = String(numberPctLast).concat("/", String(month + 1), "/", String(realYear));
-            }
-
-            const newOrder = new Order({
-                userId: req.body.userId,
-                toolId: req.body.toolId,
-                WO: req.body.WO,
-                PCT: pct1,
-                NV: req.body.NV,
-                note: req.body.note,
-                content: req.body.content,
-                timeStart: req.body.timeStart,
-                timeStop: req.body.timeStop,
-                status: req.body.status,
-            });
-            newOrder.save()
-                .then(order => res.json(order))
-                .catch(err => res.json(err))
-                ;
-        }
-
-        else {
-            if (monthPCTLast != realMonth) {
-                pct1 = String(1).concat("/", String(month + 1), "/", String(year));
-            } else {
-                pct1 = String(numberPctLast).concat("/", String(month + 1), "/", String(year));
-            }
-
-            const newOrder = new Order({
-                userId: req.body.userId,
-                toolId: req.body.toolId,
-                WO: req.body.WO,
-                PCT: pct1,
-                NV: req.body.NV,
-                note: req.body.note,
-                content: req.body.content,
-                timeStart: req.body.timeStart,
-                timeStop: req.body.timeStop,
-                status: req.body.status,
-            });
-            newOrder.save()
-                .then(order => res.json(order))
-                .catch(err => res.json(err))
-                ;
-        }
-    } else {
-        res.json("Create Work Order Fail");
+        pct = (Number(pctLast[0]) + 1) + "/" + ("0" + (month+1)).slice(-2) + "/" + year
     }
+
+    const newOrder = new Order({
+        userId: req.body.userId,
+        toolId: req.body.toolId,
+        WO: req.body.WO,
+        PCT: pct,
+        NV: req.body.NV,
+        note: req.body.note,
+        content: req.body.content,
+        timeStart: req.body.timeStart,
+        timeStop: req.body.timeStop,
+        status: req.body.status,
+    });
+    newOrder.save()
+        .then(order => res.json(order))
+        .catch(err => res.json(err))
+        ;
 })
 
 //@route DELETE api/orders:id
