@@ -98,6 +98,7 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an orders
 //@access Public
 router.post('/', verify, async (req, res) => {
+<<<<<<< HEAD
     //let validate the data before we a user
     //const { error } = createOrderValidation(req.body);
     //if (error) return res.status(400).send(error.details[0].message);
@@ -105,16 +106,17 @@ router.post('/', verify, async (req, res) => {
     console.log(WOExist)
     if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
 
+=======
+>>>>>>> 49953b3aa059db87f4c2266b09d6e5a002579f1d
     let date = new Date();
-    let month = date.getMonth();
-    let realMonth = month + 1;
-    let year = String(date.getFullYear()).slice(2, 4);
-    let realYear = Number(year);
-    let pct = "14/11/20";
+    let month = ("0" + (date.getMonth() + 1)).slice(-2)
+    let year = date.getYear() - 100;
     let lastWo = await Order.findOne({}, {}, { sort: { 'date': -1 } }, function (err, order) {
         return order;
     });
+    let pct = lastWo ? ("0" + Number(lastWo.PCT.split("/")[0]) + 1).slice(-2) : '01';
 
+<<<<<<< HEAD
     if (lastWo != null) {
         let pctLast = await lastWo.PCT.split("/")
         let numberPctLast = Number(pctLast[0]) + 1;
@@ -176,6 +178,24 @@ router.post('/', verify, async (req, res) => {
     else {
         res.json("Create Work Order Fail");
     }
+=======
+    const newOrder = new Order({
+        userId: req.body.userId,
+        toolId: req.body.toolId,
+        WO: req.body.WO,
+        PCT: pct + "/" + month + "/" + year,
+        NV: req.body.NV,
+        note: req.body.note,
+        content: req.body.content,
+        timeStart: req.body.timeStart,
+        timeStop: req.body.timeStop,
+        status: req.body.status,
+    });
+    newOrder.save()
+        .then(order => res.json(order))
+        .catch(err => res.json(err))
+        ;
+>>>>>>> 49953b3aa059db87f4c2266b09d6e5a002579f1d
 })
 
 //@route DELETE api/orders:id
