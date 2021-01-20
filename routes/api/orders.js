@@ -98,6 +98,9 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an orders
 //@access Public
 router.post('/', verify, async (req, res) => {
+    const WOExist = await Order.findOne({ WO: req.body.WO });
+    console.log(WOExist)
+    if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
     let date = new Date();
     let month = ("0" + (date.getMonth() + 1)).slice(-2)
     let year = date.getYear() - 100;
