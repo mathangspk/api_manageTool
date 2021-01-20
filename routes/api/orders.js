@@ -107,13 +107,21 @@ router.post('/', verify, async (req, res) => {
     let lastWo = await Order.findOne({}, {}, { sort: { 'date': -1 } }, function (err, order) {
         return order;
     });
-    let pct = lastWo ? ("0" + Number(lastWo.PCT.split("/")[0]) + 1).slice(-2) : '01';
+    console.log("last:" + lastWo);
 
+    //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
+    let pct = lastWo ? Number(lastWo.PCT.split("/")[0]) + 1 : '1';
+    if (pct < 10) {
+        pctT = "00" + pct;
+    } else if (pct >= 10 && pct < 100) {
+        pctT = "0" + pct;
+    } else pctT = pct;
+    console.log("pct: " + pctT)
     const newOrder = new Order({
         userId: req.body.userId,
         toolId: req.body.toolId,
         WO: req.body.WO,
-        PCT: pct + "/" + month + "/" + year,
+        PCT: pctT + "/" + month + "/" + year,
         NV: req.body.NV,
         note: req.body.note,
         content: req.body.content,
