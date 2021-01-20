@@ -98,16 +98,6 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an orders
 //@access Public
 router.post('/', verify, async (req, res) => {
-<<<<<<< HEAD
-    //let validate the data before we a user
-    //const { error } = createOrderValidation(req.body);
-    //if (error) return res.status(400).send(error.details[0].message);
-    const WOExist = await Order.findOne({ WO: req.body.WO });
-    console.log(WOExist)
-    if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
-
-=======
->>>>>>> 49953b3aa059db87f4c2266b09d6e5a002579f1d
     let date = new Date();
     let month = ("0" + (date.getMonth() + 1)).slice(-2)
     let year = date.getYear() - 100;
@@ -116,69 +106,6 @@ router.post('/', verify, async (req, res) => {
     });
     let pct = lastWo ? ("0" + Number(lastWo.PCT.split("/")[0]) + 1).slice(-2) : '01';
 
-<<<<<<< HEAD
-    if (lastWo != null) {
-        let pctLast = await lastWo.PCT.split("/")
-        let numberPctLast = Number(pctLast[0]) + 1;
-        let monthPCTLast = Number(pctLast[1]);
-        let yearPCTLast = Number(pctLast[2]);
-        let pct1;
-        if (yearPCTLast != realYear) {
-            if (monthPCTLast != realMonth) {
-                pct1 = String(1).concat("/", String(month + 1), "/", String(realYear));
-            } else {
-                pct1 = String(numberPctLast).concat("/", String(month + 1), "/", String(realYear));
-            }
-            const newOrder = new Order({
-                userId: req.body.userId,
-                toolId: req.body.toolId,
-                WO: req.body.WO,
-                PCT: pct1,
-                NV: req.body.NV,
-                note: req.body.note,
-                content: req.body.content,
-                timeStart: req.body.timeStart,
-                timeStop: req.body.timeStop,
-                status: req.body.status,
-            });
-            newOrder.save()
-                .then(order => res.json(order))
-                .catch(err => res.json(err))
-                ;
-        }
-
-        else {
-            if (monthPCTLast != realMonth) {
-                pct1 = String(1).concat("/", String(month + 1), "/", String(year));
-            } else {
-                pct1 = String(numberPctLast).concat("/", String(month + 1), "/", String(year));
-            }
-
-            const newOrder = new Order({
-                userId: req.body.userId,
-                toolId: req.body.toolId,
-                WO: req.body.WO,
-                PCT: pct1,
-                NV: req.body.NV,
-                note: req.body.note,
-                content: req.body.content,
-                timeStart: req.body.timeStart,
-                timeStop: req.body.timeStop,
-                status: req.body.status,
-            });
-            newOrder.save()
-                .then(order => res.json(order))
-                .catch(err => res.json(err))
-                ;
-        }
-    }
-    else if(lastWo == null){
-        
-    }
-    else {
-        res.json("Create Work Order Fail");
-    }
-=======
     const newOrder = new Order({
         userId: req.body.userId,
         toolId: req.body.toolId,
@@ -195,7 +122,6 @@ router.post('/', verify, async (req, res) => {
         .then(order => res.json(order))
         .catch(err => res.json(err))
         ;
->>>>>>> 49953b3aa059db87f4c2266b09d6e5a002579f1d
 })
 
 //@route DELETE api/orders:id
