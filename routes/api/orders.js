@@ -101,6 +101,9 @@ router.post('/', verify, async (req, res) => {
     //let validate the data before we a user
     //const { error } = createOrderValidation(req.body);
     //if (error) return res.status(400).send(error.details[0].message);
+    const WOExist = await Order.findOne({ WO: req.body.WO });
+    console.log(WOExist)
+    if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
 
     let date = new Date();
     let month = date.getMonth();
@@ -124,7 +127,6 @@ router.post('/', verify, async (req, res) => {
             } else {
                 pct1 = String(numberPctLast).concat("/", String(month + 1), "/", String(realYear));
             }
-
             const newOrder = new Order({
                 userId: req.body.userId,
                 toolId: req.body.toolId,
@@ -167,7 +169,11 @@ router.post('/', verify, async (req, res) => {
                 .catch(err => res.json(err))
                 ;
         }
-    } else {
+    }
+    else if(lastWo == null){
+        
+    }
+    else {
         res.json("Create Work Order Fail");
     }
 })
