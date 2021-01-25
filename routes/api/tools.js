@@ -138,10 +138,7 @@ router.patch('/:id', verify, async (req, res) => {
         //when user add tool
         if (req.body.woInfo && req.body.woInfo._id) {
             if (parseInt(req.body.status) === 1 || (tool.status === 1 && parseInt(req.body.status) === 2)) {
-                await Order.updateOne(
-                    { _id: req.body.woInfo._id },
-                    { $set: { toolId: req.body.woInfo.toolId }}
-                    )
+
                 await Tool.updateOne(
                     { _id: req.params.id },
                     {
@@ -158,7 +155,11 @@ router.patch('/:id', verify, async (req, res) => {
                             Data: { Row: tool },
                             Status: { StatusCode: 200, Message: 'OK' }
                         }));
-                
+                await Order.updateOne(
+                    { _id: req.body.woInfo._id },
+                    { $set: { toolId: req.body.woInfo.toolId } }
+                )
+
             } else {
                 res.status(500).json({ error: "Tool đã được sử dụng" })
             }
