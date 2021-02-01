@@ -107,10 +107,15 @@ router.post('/', verify, async (req, res) => {
     let lastWo = await Order.findOne({}, {}, { sort: { 'date': -1 } }, function (err, order) {
         return order;
     });
-    console.log("last:" + lastWo);
-
+    let lastmonth = lastWo ? Number(lastWo.PCT.split("/")[1]) : month;
+    let pct;
+    if (Number(month) !== lastmonth) {
+        pct = 1;
+    } else {
+        pct = lastWo ? Number(lastWo.PCT.split("/")[0]) + 1 : '1';
+    }
     //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
-    let pct = lastWo ? Number(lastWo.PCT.split("/")[0]) + 1 : '1';
+    console.log("last:" + lastWo);
     if (pct < 10) {
         pctT = "00" + pct;
     } else if (pct >= 10 && pct < 100) {
@@ -128,6 +133,7 @@ router.post('/', verify, async (req, res) => {
         timeStart: req.body.timeStart,
         timeStop: req.body.timeStop,
         status: req.body.status,
+        statusTool: req.body.statusTool,
     });
     newOrder.save()
         .then(order => res.json(order))
@@ -186,6 +192,7 @@ router.patch('/:orderId', verify, async (req, res) => {
                     timeStart: req.body.timeStart,
                     timeStop: req.body.timeStop,
                     status: req.body.status,
+                    statusTool: req.body.statusTool,
                 }
             })
 

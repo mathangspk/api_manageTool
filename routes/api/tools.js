@@ -109,6 +109,7 @@ router.post('/', verify, async (req, res) => {
         type: req.body.type,
         quantity: req.body.quantity,
         images: req.body.images,
+        wo: req.body.wo
     });
     await newTool.save()
         .then(tool => res.json(tool))
@@ -149,6 +150,7 @@ router.patch('/:id', verify, async (req, res) => {
                             type: req.body.type,
                             quantity: req.body.quantity,
                             images: req.body.images,
+                            wo: req.body.wo
                         }
                     }).then(tool => res.status(200).json(
                         {
@@ -174,6 +176,7 @@ router.patch('/:id', verify, async (req, res) => {
                         type: req.body.type,
                         quantity: req.body.quantity,
                         images: req.body.images,
+                        wo:req.body.wo
                     }
                 }).then(tool => res.status(200).json(
                     {

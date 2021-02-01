@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ToolSchema = Schema({
-    status:{
+    status: {
         type: Number,
         required: true,
     },
@@ -13,22 +13,25 @@ const ToolSchema = Schema({
         type: String,
         required: true,
     },
-    type:{
+    type: {
         type: String,
-        required:true,
+        required: true,
     },
-    quantity:{
+    quantity: {
         type: Number,
         required: true
     },
-    images:[{
+    images: [{
         filename: {
             type: String,
         }
     }],
     date: {
-        type:Date,
+        type: Date,
         default: Date.now
+    },
+    wo: {
+        type: String
     }
 })
 module.exports = mongoose.model('Tool', ToolSchema);

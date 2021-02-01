@@ -124,6 +124,19 @@ const createOrderValidation = (data) => {
                     }
                 })
             }),
+        statusTool: Joi.string()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "number.min":
+                            return { message: "Vui lòng chọn trạng thái" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn trạng thái" };
+                    }
+                })
+            }),
     }
     return Joi.validate(data, schema)
 }

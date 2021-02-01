@@ -5,21 +5,21 @@ const Tool = require('../models/Tool');
 const OrderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref:"User",
+        ref: "User",
         required: true,
     },
-    toolId: [{               
+    toolId: [{
         type: Schema.Types.ObjectId,
-        ref:"Tool"
+        ref: "Tool"
     }],
     WO: {
         type: String,
         required: true
     },
-    content:{
+    content: {
         type: String,
     },
-    note:{
+    note: {
         type: String,
     },
     PCT: {
@@ -28,7 +28,7 @@ const OrderSchema = new Schema({
     },
     NV: [{
         type: Schema.Types.ObjectId,
-        ref:"User"
+        ref: "User"
     }],
     timeStart: {
         type: Date,
@@ -42,10 +42,14 @@ const OrderSchema = new Schema({
         type: String,
         required: true
     },
+    statusTool: {
+        type: String,
+        required: true
+    },
     date: {
         type: Date,
         default: Date.now
     }
 })
 
-module.exports = Order = mongoose.model('order',OrderSchema)
+module.exports = Order = mongoose.model('order', OrderSchema)
