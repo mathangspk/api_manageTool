@@ -18,7 +18,7 @@ router.get('', verify, async (req, res) => {
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
 
-    console.log(countOrder);
+    //console.log(countOrder);
     //console.log(countOrder)
     await Order.find().populate("userId", "-password -__v -date").skip(skip).limit(limit)
         .sort({ date: -1 })
@@ -48,7 +48,7 @@ router.get('', verify, async (req, res) => {
 //@access Public
 router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
-    console.log(jwt.verify(token, TOKEN_SECRET))
+    //console.log(jwt.verify(token, TOKEN_SECRET))
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
@@ -99,7 +99,7 @@ router.get('/collect-tools', verify, (req, res) => {
 //@access Public
 router.post('/', verify, async (req, res) => {
     const WOExist = await Order.findOne({ WO: req.body.WO });
-    console.log(WOExist)
+    //console.log(WOExist)
     if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
     let date = new Date();
     let month = ("0" + (date.getMonth() + 1)).slice(-2)
@@ -115,17 +115,19 @@ router.post('/', verify, async (req, res) => {
         pct = lastWo ? Number(lastWo.PCT.split("/")[0]) + 1 : '1';
     }
     //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
-    console.log("last:" + lastWo);
+    //console.log("last:" + lastWo);
     if (pct < 10) {
         pctT = "00" + pct;
     } else if (pct >= 10 && pct < 100) {
         pctT = "0" + pct;
     } else pctT = pct;
-    console.log("pct: " + pctT)
+    //console.log("pct: " + pctT)
     const newOrder = new Order({
         userId: req.body.userId,
         toolId: req.body.toolId,
         WO: req.body.WO,
+        location: req.body.location,
+        KKS: req.body.KKS,
         PCT: pctT + "/" + month + "/" + year,
         NV: req.body.NV,
         note: req.body.note,
@@ -185,6 +187,8 @@ router.patch('/:orderId', verify, async (req, res) => {
                     userId: req.body.userId,
                     toolId: req.body.toolId,
                     WO: req.body.WO,
+                    location: req.body.location,
+                    KKS: req.body.KKS,
                     PCT: req.body.PCT,
                     NV: req.body.NV,
                     note: req.body.note,
@@ -197,11 +201,11 @@ router.patch('/:orderId', verify, async (req, res) => {
             })
 
         const statusComplete = req.body.status;
-        console.log(statusComplete);
+        //console.log(statusComplete);
         toolId = req.body.toolId;
         if (statusComplete == "COMPLETE") {
             toolId.forEach(tools => {
-                console.log(tools._id)
+                //console.log(tools._id)
                 Tool.findByIdAndUpdate(tools._id, { $set: { status: 1 } }).then(toolDeleted => {
                     if (!toolDeleted) {
                         return res.status(404).json({ error: "No toolDelete Found" });
@@ -214,7 +218,7 @@ router.patch('/:orderId', verify, async (req, res) => {
             })
         };
         res.json(updateOrder);
-        console.log(toolId);
+        //console.log(toolId);
     } catch (err) {
         res.json({ message: err });
     }

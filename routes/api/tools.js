@@ -93,11 +93,11 @@ router.get('/skip', verify, (req, res) => {
 router.post('/', verify, async (req, res) => {
     //let validate the data before we a user
     var reqStatus = req.body.status;
-    console.log(req.body)
+    //console.log(req.body)
     function getStatus(reqStatus) {
         return (reqStatus == "0" ? false : true)
     }
-    console.log(getStatus(reqStatus))
+    //console.log(getStatus(reqStatus))
     // const { error } = toolValidation(req.body);
     //console.log(error);
     //if (error) return res.status(400).json(error.details[0].message);

@@ -12,6 +12,12 @@ const OrderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Tool"
     }],
+    location: {
+        type: String,
+    },
+    KKS: {
+        type: String,
+    },
     WO: {
         type: String,
         required: true

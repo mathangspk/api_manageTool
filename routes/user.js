@@ -68,14 +68,14 @@ router.post("/register", async (req, res) => {
 })
 //login
 router.post('/login', async (req, res) => {
-  console.log('login')
+  //console.log('login')
   //let validate the data before we a user
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   //checking if the user is already in the database
   const user = await User.findOne({ email: req.body.email });
-  console.log(user);
+  //console.log(user);
   if (!user) return res.status(400).send('Email is not already exist');
   //password is correct
   const validPass = await bcrypt.compare(req.body.password, user.password);
@@ -83,7 +83,7 @@ router.post('/login', async (req, res) => {
 
   //create and assign a token
   const token = jwt.sign({ _id: user._id, admin: user.admin }, TOKEN_SECRET);
-  console.log(token)
+  //console.log(token)
   res.status(200).json({
     token,
     user: {
