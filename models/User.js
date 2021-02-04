@@ -35,6 +35,9 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         required:true,
     },
+    pkt:{
+        type: Boolean
+    },
     date: {
         type:Date,
         default: Date.now

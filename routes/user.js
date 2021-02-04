@@ -38,7 +38,8 @@ router.post("/register", async (req, res) => {
     phone: req.body.phone,
     group: req.body.group,
     department: req.body.department,
-    admin: req.body.admin
+    admin: req.body.admin,
+    pkt: req.body.pkt
   });
   try {
     const savedUser = await newUser.save();
@@ -57,7 +58,8 @@ router.post("/register", async (req, res) => {
         phone: savedUser.phone,
         group: savedUser.group,
         department: savedUser.department,
-        admin: savedUser.admin
+        admin: savedUser.admin,
+        pkt: req.body.pkt
       }
     });
 
@@ -94,6 +96,7 @@ router.post('/login', async (req, res) => {
       group: user.group,
       department: user.department,
       admin: user.admin,
+      pkt: req.body.pkt
     }
   });
   //res.header('auth-token', token).send(token);
@@ -116,7 +119,8 @@ router.patch('/:userId', verify, async (req, res) => {
             password: hashedPassword,
             group: req.body.group,
             department: req.body.department,
-            admin: req.body.admin
+            admin: req.body.admin,
+            pkt: req.body.pkt
           }
         })
       res.json(updateUser);
@@ -130,7 +134,8 @@ router.patch('/:userId', verify, async (req, res) => {
             phone: req.body.phone,
             group: req.body.group,
             department: req.body.department,
-            admin: req.body.admin
+            admin: req.body.admin,
+            pkt: req.body.pkt
           }
         })
       res.json(updateUser);

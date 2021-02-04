@@ -9,6 +9,8 @@ const resgisterValidation = (data) => {
         group: Joi.string().min(1).required(),
         department: Joi.string().min(1).required(),
         admin: Joi.bool().required(),
+        pkt: Joi.bool().required(),
+
     }
     return Joi.validate(data, schema)
 }
