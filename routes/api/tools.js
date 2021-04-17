@@ -159,7 +159,7 @@ router.patch('/:id', verify, async (req, res) => {
                         }));
                 await Order.updateOne(
                     { _id: req.body.woInfo._id },
-                    { $set: { toolId: req.body.woInfo.toolId } }
+                    { $set: { toolId: req.body.woInfo.toolId , status: req.body.woInfo.status } }
                 )
 
             } else {
