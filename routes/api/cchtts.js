@@ -98,6 +98,7 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an cchtts
 //@access Public
 router.post('/', verify, async (req, res) => {
+    console.log(req.body)
     const WOExist = await Cchtt.findOne({ WO: req.body.WO });
     //console.log(WOExist)
     if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
