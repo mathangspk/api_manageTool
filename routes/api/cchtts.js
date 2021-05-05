@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createCchttValidation } = require('../../validation')
+const { cchttValidation } = require('../../validation')
 const verify = require('../verifyToken');
 // Cchtt Model
 const Cchtt = require('../../models/Cchtt');
@@ -49,6 +49,7 @@ router.get('', verify, async (req, res) => {
 router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
     //console.log(jwt.verify(token, TOKEN_SECRET))
+    console.log(req.query)
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
@@ -99,9 +100,9 @@ router.get('/collect-tools', verify, (req, res) => {
 //@access Public
 router.post('/', verify, async (req, res) => {
     console.log(req.body)
-    const WOExist = await Cchtt.findOne({ WO: req.body.WO });
+    //const WOExist = await Cchtt.findOne({ WO: req.body.WO });
     //console.log(WOExist)
-    if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
+    //if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
     let date = new Date();
     let month = ("0" + (date.getMonth() + 1)).slice(-2)
     let year = date.getYear() - 100;
@@ -125,18 +126,12 @@ router.post('/', verify, async (req, res) => {
     //console.log("pct: " + pctT)
     const newCchtt = new Cchtt({
         userId: req.body.userId,
-        toolId: req.body.toolId,
         WO: req.body.WO,
-        location: req.body.location,
-        KKS: req.body.KKS,
-        PCT: pctT + "/" + month + "/" + year,
-        NV: req.body.NV,
+        PCT: req.body.PCT,        
+        PCCHTT: pctT + "/ CHTT /" + year,
         note: req.body.note,
         content: req.body.content,
-        timeStart: req.body.timeStart,
-        timeStop: req.body.timeStop,
-        status: req.body.status,
-        statusTool: req.body.statusTool,
+        timeChange: req.body.timeChange
     });
     newCchtt.save()
         .then(cchtt => res.json(cchtt))

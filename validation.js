@@ -158,19 +158,6 @@ const toolValidation = (data) => {
                     }
                 })
             }),
-        // status: Joi.string()
-        //     .error((errors) => {
-        //         return errors.map(error => {
-        //             switch (error.type) {
-        //                 case "string.min":
-        //                     return { message: "first msg" };
-        //                 case "string.max":
-        //                     return { message: "second msg" };
-        //                 case "any.empty":
-        //                     return { message: "Tên sản phẩm không để trống" };
-        //             }
-        //         })
-        //     }),
         manufacturer: Joi.string().min(1).required()
             .error((errors) => {
                 return errors.map(error => {
@@ -272,6 +259,24 @@ const customerValidation = (data) => {
     }
     return Joi.validate(data, schema)
 }
+const cchttValidation = (data) => {
+    const schema = {
+        PCCHTT: Joi.string()
+        .error((errors) => {
+            return errors.map(error => {
+                switch (error.type) {
+                    case "string.min":
+                        return { message: "first msg" };
+                    case "string.max":
+                        return { message: "second msg" };
+                    case "any.empty":
+                        return { message: "Tiêu đề không để trống" };
+                }
+            })
+        }),
+    }
+    return Joi.validate(data, schema)
+}
 
 const postValidation = (data) => {
     const schema = {
@@ -350,3 +355,4 @@ module.exports.loginValidation = loginValidation;
 module.exports.createOrderValidation = createOrderValidation;
 module.exports.customerValidation = customerValidation;
 module.exports.postValidation = postValidation;
+module.exports.cchttValidation = cchttValidation;

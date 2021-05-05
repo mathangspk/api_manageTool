@@ -121,6 +121,7 @@ router.post('/', verify, async (req, res) => {
     } else if (pct >= 10 && pct < 100) {
         pctT = "0" + pct;
     } else pctT = pct;
+    
     //console.log("pct: " + pctT)
     const newOrder = new Order({
         userId: req.body.userId,
