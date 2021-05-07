@@ -54,9 +54,7 @@ router.get('/search', verify, async (req, res) => {
     let skip = Number(req.query.skip)
     let paramsQuery = {
         WO: { '$regex': req.query.wo || '' },
-        PCT: { '$regex': req.query.pct || '' },
-        status: { '$regex': req.query.status !== 'ALL' && req.query.status || '' },
-        content: { '$regex': req.query.content || '' }
+        PCT: { '$regex': req.query.pct || '' }
     }
     if (req.query.userId) {
         paramsQuery.userId = { '$in': req.query.userId.split(',') }
@@ -99,7 +97,6 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an cchtts
 //@access Public
 router.post('/', verify, async (req, res) => {
-    console.log(req.body)
     //const WOExist = await Cchtt.findOne({ WO: req.body.WO });
     //console.log(WOExist)
     //if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
@@ -109,12 +106,14 @@ router.post('/', verify, async (req, res) => {
     let lastWo = await Cchtt.findOne({}, {}, { sort: { 'date': -1 } }, function (err, cchtt) {
         return cchtt;
     });
-    let lastmonth = lastWo ? Number(lastWo.PCT.split("/")[1]) : month;
+    console.log(lastWo)
+    let lastyear = lastWo ? Number(lastWo.PCCHTT.split("/")[2]) : year;
     let pct;
-    if (Number(month) !== lastmonth) {
+    console.log(lastyear);
+    if (Number(year) !== lastyear) {
         pct = 1;
     } else {
-        pct = lastWo ? Number(lastWo.PCT.split("/")[0]) + 1 : '1';
+        pct = lastWo ? Number(lastWo.PCCHTT.split("/")[0]) + 1 : '1';
     }
     //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
     //console.log("last:" + lastWo);
@@ -127,7 +126,7 @@ router.post('/', verify, async (req, res) => {
     const newCchtt = new Cchtt({
         userId: req.body.userId,
         WO: req.body.WO,
-        PCT: req.body.PCT,        
+        PCT: req.body.PCT,
         PCCHTT: pctT + "/ CHTT /" + year,
         note: req.body.note,
         content: req.body.content,
@@ -142,57 +141,52 @@ router.post('/', verify, async (req, res) => {
 //@route DELETE api/cchtts:id
 //@desc delete an cchtts
 //@access Public
-// router.delete('/:id', verify, async (req, res) => {
-//     try {
-//         var toolId = [];
-//         await Cchtt.findByIdAndDelete({ _id: req.params.id }).then(wo => {
-//             if (!wo) {
-//                 return res.status(404).json({ error: "No Wo Found" });
-//             }
-//             else {
-//                 toolId = wo.toolId;
-//                 res.json(wo);
-//             }
-//         })
-//         console.log(toolId);
-//         toolId.forEach(_id => {
-//             Tool.findByIdAndUpdate(_id, { $set: { status: 1 } }).then(toolDeleted => {
-//                 if (!toolDeleted) {
-//                     return res.status(404).json({ error: "No toolDelete Found" });
-//                 } else {
-//                     ;
-//                     //res.status(200).json({ success: true });
-//                 }
-//             }
-//             )
-//         })
-//     }
-//     catch (err) {
-//         res.status(404).json({ success: false })
-//     }
-// })
+router.delete('/:id', verify, async (req, res) => {
+    try {
+        var toolId = [];
+        await Cchtt.findByIdAndDelete({ _id: req.params.id }).then(wo => {
+            if (!wo) {
+                return res.status(404).json({ error: "No CCHTT Found" });
+            }
+            else {
+                toolId = wo.toolId;
+                res.json(wo);
+            }
+        })
+        console.log(toolId);
+        toolId.forEach(_id => {
+            Tool.findByIdAndUpdate(_id, { $set: { status: 1 } }).then(toolDeleted => {
+                if (!toolDeleted) {
+                    return res.status(404).json({ error: "No toolDelete Found" });
+                } else {
+                    ;
+                    //res.status(200).json({ success: true });
+                }
+            }
+            )
+        })
+    }
+    catch (err) {
+        res.status(404).json({ success: false })
+    }
+})
 
 //update cchtt
 router.patch('/:cchttId', verify, async (req, res) => {
     try {
+        console.log(req.params)
+        console.log(req.body)
         var toolId = [];
         const updateCchtt = await Cchtt.updateOne(
             { _id: req.params.cchttId },
             {
                 $set: {
                     userId: req.body.userId,
-                    toolId: req.body.toolId,
                     WO: req.body.WO,
-                    location: req.body.location,
-                    KKS: req.body.KKS,
                     PCT: req.body.PCT,
-                    NV: req.body.NV,
                     note: req.body.note,
                     content: req.body.content,
-                    timeStart: req.body.timeStart,
-                    timeStop: req.body.timeStop,
-                    status: req.body.status,
-                    statusTool: req.body.statusTool,
+                    timeChange: req.body.timeChange
                 }
             })
 

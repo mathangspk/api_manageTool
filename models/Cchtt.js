@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Tool = require('./Tool');
 //create Schema 
 const CchttSchema = new Schema({
     userId: {
@@ -20,10 +19,6 @@ const CchttSchema = new Schema({
         type: String,
         required: true
     },
-    NV: [{
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }],
     timeChange: {
         type: Date,
         required: true
