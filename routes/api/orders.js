@@ -48,6 +48,7 @@ router.get('', verify, async (req, res) => {
 //@access Public
 router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
+    console.log(req.query)
     //console.log(jwt.verify(token, TOKEN_SECRET))
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
