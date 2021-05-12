@@ -5,6 +5,8 @@ const cors = require('cors');
 require('dotenv/config');
 const orders = require('./routes/api/orders')
 const cchtts = require('./routes/api/cchtts')
+const cgsats = require('./routes/api/cgsats')
+const bbdgkts = require('./routes/api/bbdgkts')
 const userRoute = require('./routes/user');
 const tool = require('./routes/api/tools');
 const customer = require('./routes/api/customer');
@@ -38,6 +40,8 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreat
 //use route
 app.use('/api/orders', orders);
 app.use('/api/cchtts', cchtts);
+app.use('/api/cgsats', cgsats);
+app.use('/api/bbdgkts', bbdgkts);
 app.use('/users', userRoute);
 app.use('/api/tools', tool);
 app.use('/api/customers', customer);

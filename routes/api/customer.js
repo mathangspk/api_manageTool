@@ -19,11 +19,12 @@ router.get('/', verify, (req, res) => {
 router.post('/', verify, (req, res) => {
     //let validate the data before we a user
     const { error } = customerValidation(req.body);
-    if (error) 
-    {console.log(error)
-        
-        return res.status(400).json(error.details[0].message);}
-    
+    if (error) {
+        console.log(error)
+
+        return res.status(400).json(error.details[0].message);
+    }
+
     const newCustomer = new Customer({
         name: req.body.name,
         phoneNumber: req.body.phoneNumber,

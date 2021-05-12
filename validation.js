@@ -314,17 +314,122 @@ const cchttValidation = (data) => {
                 })
             }),
          note: Joi.string().allow(null, '')
-        //     .error((errors) => {
-        //         return errors.map(error => {
-        //             switch (error.type) {
-        //                 case "string.min":
-        //                     return { message: "WO có 6 số" };
-        //                 case "string.max":
-        //                     return { message: "second msg" };
-        //             }
-        //         })
-        //     }),
-
+    }
+    return Joi.validate(data, schema)
+}
+const cgsatValidation = (data) => {
+    const schema = {
+        userId: Joi.string().required()
+        .error((errors) => {
+            return errors.map(error => {
+                switch (error.type) {
+                    case "string.min":
+                        return { message: "first msg" };
+                    case "string.max":
+                        return { message: "second msg" };
+                    case "any.empty":
+                        return { message: "no userId" };
+                }
+            })
+        }),
+        WO: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập WO" };
+                    }
+                })
+            }),
+        PCT: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập số PCT" };
+                    }
+                })
+            }),
+        timeChange: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn thời gian thay đổi" };
+                    }
+                })
+            }),
+         note: Joi.string().allow(null, '')
+    }
+    return Joi.validate(data, schema)
+}
+const bbdgktValidation = (data) => {
+    const schema = {
+        userId: Joi.string().required()
+        .error((errors) => {
+            return errors.map(error => {
+                switch (error.type) {
+                    case "string.min":
+                        return { message: "first msg" };
+                    case "string.max":
+                        return { message: "second msg" };
+                    case "any.empty":
+                        return { message: "no userId" };
+                }
+            })
+        }),
+        WO: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập WO" };
+                    }
+                })
+            }),
+        content: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập số PCT" };
+                    }
+                })
+            }),
+        time: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn thời gian thay đổi" };
+                    }
+                })
+            }),
+         note: Joi.string().allow(null, '')
     }
     return Joi.validate(data, schema)
 }
@@ -407,3 +512,5 @@ module.exports.createOrderValidation = createOrderValidation;
 module.exports.customerValidation = customerValidation;
 module.exports.postValidation = postValidation;
 module.exports.cchttValidation = cchttValidation;
+module.exports.cgsatValidation = cgsatValidation;
+module.exports.bbdgktValidation = bbdgktValidation;
