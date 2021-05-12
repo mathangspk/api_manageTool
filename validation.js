@@ -261,7 +261,7 @@ const customerValidation = (data) => {
 }
 const cchttValidation = (data) => {
     const schema = {
-        PCCHTT: Joi.string()
+        userId: Joi.string().required()
         .error((errors) => {
             return errors.map(error => {
                 switch (error.type) {
@@ -270,10 +270,61 @@ const cchttValidation = (data) => {
                     case "string.max":
                         return { message: "second msg" };
                     case "any.empty":
-                        return { message: "Tiêu đề không để trống" };
+                        return { message: "no userId" };
                 }
             })
         }),
+        WO: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập WO" };
+                    }
+                })
+            }),
+        PCT: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập số PCT" };
+                    }
+                })
+            }),
+        timeChange: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn thời gian thay đổi" };
+                    }
+                })
+            }),
+         note: Joi.string().allow(null, '')
+        //     .error((errors) => {
+        //         return errors.map(error => {
+        //             switch (error.type) {
+        //                 case "string.min":
+        //                     return { message: "WO có 6 số" };
+        //                 case "string.max":
+        //                     return { message: "second msg" };
+        //             }
+        //         })
+        //     }),
+
     }
     return Joi.validate(data, schema)
 }
