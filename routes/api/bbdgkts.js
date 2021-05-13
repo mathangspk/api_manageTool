@@ -53,6 +53,8 @@ router.get('/search', verify, async (req, res) => {
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
+        content: { '$regex': req.query.content || '' },
+        BBDGKT: { '$regex': req.query.bbdgkt || '' },
         WO: { '$regex': req.query.wo || '' },
         BBDGKT: { '$regex': req.query.bbdgkt || '' }
     }
@@ -97,42 +99,32 @@ router.get('/collect-tools', verify, (req, res) => {
 //@desc Create an bbdgkts
 //@access Public
 router.post('/', verify, async (req, res) => {
-    console.log(req.body)
-    //const WOExist = await bbdgkt.findOne({ WO: req.body.WO });
-    //console.log(WOExist)
-    //if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
+    let groupName = req.body.group;
+    let groupNumber;
+    if (groupName === "Tự Động" || groupName === "Kiểm Nhiệt") {
+        groupNumber = 2;
+    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine" ) {
+        groupNumber = 4;
+    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động" ) {
+        groupNumber = 3;
+    }
     const { error } = bbdgktValidation(req.body);
     if (error) {
-        console.log(error)
         return res.status(400).json(error.details[0].message);
     }
-    let date = new Date();
-    let month = ("0" + (date.getMonth() + 1)).slice(-2)
-    let year = date.getYear() - 100;
     let lastWo = await bbdgkt.findOne({}, {}, { sort: { 'date': -1 } }, function (err, bbdgkt) {
         return bbdgkt;
     });
-    console.log(lastWo)
-    let lastyear = lastWo ? Number(lastWo.BBDGKT.split("/")[2]) : year;
-    let pct;
-    console.log(lastyear);
-    if (Number(year) !== lastyear) {
-        pct = 1;
-    } else {
-        pct = lastWo ? Number(lastWo.BBDGKT.split("/")[0]) + 1 : '1';
-    }
-    //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
-    //console.log("last:" + lastWo);
+    pct = lastWo ? Number(lastWo.BBDGKT.split("/")[0]) + 1 : '1';
     if (pct < 10) {
         pctT = "00" + pct;
     } else if (pct >= 10 && pct < 100) {
         pctT = "0" + pct;
     } else pctT = pct;
-    //console.log("pct: " + pctT)
     const newBbdgkt = new bbdgkt({
         userId: req.body.userId,
         WO: req.body.WO,
-        BBDGKT: pctT + "/ BBDGKT /" + year,
+        BBDGKT: pctT + "/ BBDGKT-CNCM." + groupNumber,
         note: req.body.note,
         content: req.body.content,
         time: req.body.time

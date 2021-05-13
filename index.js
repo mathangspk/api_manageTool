@@ -7,6 +7,7 @@ const orders = require('./routes/api/orders')
 const cchtts = require('./routes/api/cchtts')
 const cgsats = require('./routes/api/cgsats')
 const bbdgkts = require('./routes/api/bbdgkts')
+const bptcs = require('./routes/api/bptcs')
 const userRoute = require('./routes/user');
 const tool = require('./routes/api/tools');
 const customer = require('./routes/api/customer');
@@ -42,6 +43,7 @@ app.use('/api/orders', orders);
 app.use('/api/cchtts', cchtts);
 app.use('/api/cgsats', cgsats);
 app.use('/api/bbdgkts', bbdgkts);
+app.use('/api/bptcs', bptcs);
 app.use('/users', userRoute);
 app.use('/api/tools', tool);
 app.use('/api/customers', customer);

@@ -1,89 +1,99 @@
 const express = require('express');
 const router = express.Router();
-const { cgsatValidation } = require('../../validation')
+const { bptcValidation } = require('../../validation')
 const verify = require('../verifyToken');
-// cgsat Model
-const cgsat = require('../../models/cgsat');
+// bptc Model
+const User = require('../../models/User');
+const bptc = require('../../models/Bptc');
 const Tool = require('../../models/Tool');
 const TOKEN_SECRET = require('../../config/secretToken').secretToken;
 const jwt = require('jsonwebtoken');
 const { concat } = require('joi');
-//@route GeT api/cgsats
-//@desc Get all cgsats
+//@route GeT api/bptcs
+//@desc Get all bptcs
 //@access Public
 router.get('', verify, async (req, res) => {
-    var countCgsat = await cgsat.countDocuments({}, (err, count) => {
+    var countBptc = await bptc.countDocuments({}, (err, count) => {
         return count;
     });
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
 
-    //console.log(countCgsat);
-    //console.log(countCgsat)
-    await cgsat.find().populate("userId", "-password -__v -date").skip(skip).limit(limit)
+    //console.log(countBptc);
+    //console.log(countBptc)
+    await bptc.find().populate("userId", "-password -__v -date").skip(skip).limit(limit)
         .sort({ date: -1 })
-        .then(cgsats => res.status(200).json(
+        .then(bptcs => res.status(200).json(
             {
-                Data: { Row: cgsats, Total: countCgsat },
+                Data: { Row: bptcs, Total: countBptc },
                 Status: { StatusCode: 200, Message: 'OK' }
             }
         ))
         .catch(err => res.status(400).json(err));
 });
 
-//@skip -limit-cgsatby- cgsat
+//@skip -limit-bptcby- bptc
 // router.get('', verify, (req, res) => {
 //     let limit = Number(req.query.limit)
 //     let skip = Number(req.query.skip)
-//     req.query.Cgsatby === 'desc' ? cgsat.find().limit(limit).skip(skip)
+//     req.query.Bptcby === 'desc' ? bptc.find().limit(limit).skip(skip)
 //         .sort({ date: 1 })
-//         .then(cgsats => res.json(cgsats)) :
-//         cgsat.find().limit(limit).skip(skip)
+//         .then(bptcs => res.json(bptcs)) :
+//         bptc.find().limit(limit).skip(skip)
 //             .sort({ date: -1 })
-//             .then(cgsats => res.json(cgsats));
+//             .then(bptcs => res.json(bptcs));
 // });
 
-//@route GeT api/cgsats
-//@desc Get all cgsats
+//@route GeT api/bptcs
+//@desc Get all bptcs
 //@access Public
 router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
-    //console.log(jwt.verify(token, TOKEN_SECRET))
+    console.log(jwt.verify(token, TOKEN_SECRET))
+    let userId = jwt.verify(token, TOKEN_SECRET)._id;
+    console.log(userId)
+    let paramsQueryUserId = {
+        _id: userId
+    }
+    await User.find(paramsQueryUserId).select("-password") //ko gui password ra ngoai
+        .sort({ date: -1 })
+        .then(users => console.log(users))
     console.log(req.query)
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
-        PCGSAT: { '$regex': req.query.gsat || '' },
-        WO: { '$regex': req.query.wo || '' },
-        PCT: { '$regex': req.query.pct || '' }
+        BPTC: { '$regex': req.query.bptc || '' },
+        JSA: { '$regex': req.query.jsa || '' },
+        content: { '$regex': req.query.content || '' }
     }
     if (req.query.userId) {
         paramsQuery.userId = { '$in': req.query.userId.split(',') }
     }
 
-    var countCgsat = await cgsat.find(paramsQuery)
+    var countBptc = await bptc.find(paramsQuery)
         .countDocuments({}, (err, count) => {
             return count;
         });
-    await cgsat.find(paramsQuery)
+    console.log(paramsQuery)
+    await bptc.find(paramsQuery)
         .skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
-        .then(cgsats => res.status(200).json(
+        .then(bptcs => res.status(200).json(
             {
-                Data: { Row: cgsats, Total: countCgsat },
+                Data: { Row: bptcs, Total: countBptc },
                 Status: { StatusCode: 200, Message: 'OK' }
             }
         ));
 });
-//@route Get api/cgsat/collect-tools
-//@desc Get all api/cgsat/collect-tools
+//@route Get api/bptc/collect-tools
+//@desc Get all api/bptc/collect-tools
 router.get('/collect-tools', verify, (req, res) => {
     let startDate = new Date(req.query.startDate)
     let endDate = new Date(req.query.endDate)
     queryParams = {
         timeStart: { $gte: startDate, $lte: endDate }
     }
-    cgsat.find(queryParams)
+    bptc.find(queryParams)
         .populate("toolId")
         .populate("userId", "-password -__v -date")
         .sort({ date: -1 })
@@ -94,66 +104,67 @@ router.get('/collect-tools', verify, (req, res) => {
             }
         ));
 });
-//@route POST api/cgsats
-//@desc Create an cgsats
+//@route POST api/bptcs
+//@desc Create an bptcs
 //@access Public
 router.post('/', verify, async (req, res) => {
-    console.log(req.body)
-    //const WOExist = await cgsat.findOne({ WO: req.body.WO });
-    //console.log(WOExist)
-    //if (WOExist) return res.status(400).send('WO ' + WOExist.WO + ' đã tồn tại, vui lòng kiểm tra lại!')
-    const { error } = cgsatValidation(req.body);
+    let groupName = req.body.group;
+    let groupNumber;
+    if (groupName === "Tự Động" || groupName === "Kiểm Nhiệt") {
+        groupNumber = 2;
+    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine") {
+        groupNumber = 4;
+    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động") {
+        groupNumber = 3;
+    }
+    console.log(groupNumber)
+    const { error } = bptcValidation(req.body);
     if (error) {
-        console.log(error)
         return res.status(400).json(error.details[0].message);
     }
-    let date = new Date();
-    let month = ("0" + (date.getMonth() + 1)).slice(-2)
-    let year = date.getYear() - 100;
-    let lastWo = await cgsat.findOne({}, {}, { sort: { 'date': -1 } }, function (err, cgsat) {
-        return cgsat;
+    let lastWo = await bptc.findOne({}, {}, { sort: { 'date': -1 } }, function (err, bptc) {
+        return bptc;
     });
     console.log(lastWo)
-    let lastyear = lastWo ? Number(lastWo.PCGSAT.split("/")[2]) : year;
-    let pct;
-    console.log(lastyear);
-    if (Number(year) !== lastyear) {
-        pct = 1;
-    } else {
-        pct = lastWo ? Number(lastWo.PCGSAT.split("/")[0]) + 1 : '1';
-    }
-    //let pct = Number(lastWo.PCT.split("/")[0]) + 1;
-    //console.log("last:" + lastWo);
+    let pct = lastWo ? Number(lastWo.BPTC.split("/")[0]) + 1 : '1';
     if (pct < 10) {
         pctT = "00" + pct;
     } else if (pct >= 10 && pct < 100) {
         pctT = "0" + pct;
     } else pctT = pct;
-    //console.log("pct: " + pctT)
-    const newCgsat = new cgsat({
+    console.log(pctT)
+    let jsa = lastWo ? Number(lastWo.JSA.split("/")[0]) + 1 : '1';
+    if (jsa < 10) {
+        jsaT = "00" + jsa;
+    } else if (pct >= 10 && pct < 100) {
+        jsaT = "0" + jsa;
+    } else jsaT = jsa;
+    console.log(jsaT)
+    console.log(pctT + "/BPTC-CNCM." + groupNumber)
+    const newBptc = new bptc({
         userId: req.body.userId,
-        WO: req.body.WO,
-        PCT: req.body.PCT,
-        PCGSAT: pctT + "/ GSAT /" + year,
+        //BPTC: "001/BPTC-CNCM.2",
+        //JSA: "001/JSA-CNCM.2",
+        BPTC: pctT + "/BPTC-CNCM." + groupNumber,
+        JSA: jsaT + "/JSA-CNCM." + groupNumber,
         note: req.body.note,
-        content: req.body.content,
-        timeChange: req.body.timeChange
+        content: req.body.content
     });
-    newCgsat.save()
-        .then(cgsat => res.json(cgsat))
+    newBptc.save()
+        .then(bptc => res.json(bptc))
         .catch(err => res.json(err))
         ;
 })
 
-//@route DELETE api/cgsats:id
-//@desc delete an cgsats
+//@route DELETE api/bptcs:id
+//@desc delete an bptcs
 //@access Public
 router.delete('/:id', verify, async (req, res) => {
     try {
         var toolId = [];
-        await cgsat.findByIdAndDelete({ _id: req.params.id }).then(wo => {
+        await bptc.findByIdAndDelete({ _id: req.params.id }).then(wo => {
             if (!wo) {
-                return res.status(404).json({ error: "No cgsat Found" });
+                return res.status(404).json({ error: "No bptc Found" });
             }
             else {
                 toolId = wo.toolId;
@@ -178,22 +189,21 @@ router.delete('/:id', verify, async (req, res) => {
     }
 })
 
-//update cgsat
-router.patch('/:cgsatId', verify, async (req, res) => {
+//update bptc
+router.patch('/:bptcId', verify, async (req, res) => {
     try {
         console.log(req.params)
         console.log(req.body)
         var toolId = [];
-        const updateCgsat = await cgsat.updateOne(
-            { _id: req.params.cgsatId },
+        const updateBptc = await bptc.updateOne(
+            { _id: req.params.bptcId },
             {
                 $set: {
                     userId: req.body.userId,
                     WO: req.body.WO,
-                    PCT: req.body.PCT,
                     note: req.body.note,
                     content: req.body.content,
-                    timeChange: req.body.timeChange
+                    time: req.body.time
                 }
             })
 
@@ -214,23 +224,23 @@ router.patch('/:cgsatId', verify, async (req, res) => {
 
             })
         };
-        res.json(updateCgsat);
+        res.json(updateBptc);
         //console.log(toolId);
     } catch (err) {
         res.json({ message: err });
     }
 })
-//@route get cgsat by id
+//@route get bptc by id
 router.get('/:id', verify, (req, res) => {
-    cgsat.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v").populate("NV", "-password -__v")
-        .then(cgsat => {
-            res.json(cgsat)
+    bptc.findById(req.params.id).populate("toolId", "-toolId -__v").populate("userId", "-password -__v").populate("NV", "-password -__v")
+        .then(bptc => {
+            res.json(bptc)
         })
 })
 router.get('/user/:id', verify, (req, res) => {
-    cgsat.find().populate("userId")
-        .then(cgsat => {
-            res.json(cgsat)
+    bptc.find().populate("userId")
+        .then(bptc => {
+            res.json(bptc)
         })
 })
 module.exports = router;

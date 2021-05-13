@@ -53,6 +53,7 @@ router.get('/search', verify, async (req, res) => {
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
     let paramsQuery = {
+        PCCHTT: { '$regex': req.query.pcchtt || '' },
         WO: { '$regex': req.query.wo || '' },
         PCT: { '$regex': req.query.pct || '' }
     }

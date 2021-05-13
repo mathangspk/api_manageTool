@@ -429,6 +429,64 @@ const bbdgktValidation = (data) => {
                     }
                 })
             }),
+        group: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn thời gian thay đổi" };
+                    }
+                })
+            }),
+         note: Joi.string().allow(null, '')
+    }
+    return Joi.validate(data, schema)
+}
+const bptcValidation = (data) => {
+    const schema = {
+        userId: Joi.string().required()
+        .error((errors) => {
+            return errors.map(error => {
+                switch (error.type) {
+                    case "string.min":
+                        return { message: "first msg" };
+                    case "string.max":
+                        return { message: "second msg" };
+                    case "any.empty":
+                        return { message: "no userId" };
+                }
+            })
+        }),
+        content: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng nhập số PCT" };
+                    }
+                })
+            }),
+        group: Joi.string().required()
+            .error((errors) => {
+                return errors.map(error => {
+                    switch (error.type) {
+                        case "string.min":
+                            return { message: "WO có 6 số" };
+                        case "string.max":
+                            return { message: "second msg" };
+                        case "any.empty":
+                            return { message: "Vui lòng chọn thời gian thay đổi" };
+                    }
+                })
+            }),
          note: Joi.string().allow(null, '')
     }
     return Joi.validate(data, schema)
@@ -514,3 +572,4 @@ module.exports.postValidation = postValidation;
 module.exports.cchttValidation = cchttValidation;
 module.exports.cgsatValidation = cgsatValidation;
 module.exports.bbdgktValidation = bbdgktValidation;
+module.exports.bptcValidation = bptcValidation;
