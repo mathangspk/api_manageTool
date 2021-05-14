@@ -51,28 +51,38 @@ router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
     let userId = jwt.verify(token, TOKEN_SECRET)._id;
 
-    let user =  await User.findById(userId).select("name department group").exec();
+    let user = await User.findById(userId).select("name department group admin").exec();
     console.log(user)
     let groupName = user.group;
     let groupNumber;
     if (groupName === "Tự Động" || groupName === "Kiểm Nhiệt") {
         groupNumber = 2;
-    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine" ) {
+    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine") {
         groupNumber = 4;
-    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động" ) {
+    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động") {
         groupNumber = 3;
     }
 
 
     let limit = Number(req.query.limit)
     let skip = Number(req.query.skip)
-    let paramsQuery = {
-        //groupNumber: {'$regex':req.query.group || ''},
-        groupNumber: groupNumber,
-        BPTC: { '$regex': req.query.bptc || '' },
-        JSA: { '$regex': req.query.jsa || '' },
-        content: { '$regex': req.query.content || '' }        
+    let paramsQuery;
+    if (user.admin) {
+        paramsQuery = {
+            BPTC: { '$regex': req.query.bptc || '' },
+            JSA: { '$regex': req.query.jsa || '' },
+            content: { '$regex': req.query.content || '' }
+        }
+    } else {
+        paramsQuery = {
+            //groupNumber: {'$regex':req.query.group || ''},
+            groupNumber: groupNumber,
+            BPTC: { '$regex': req.query.bptc || '' },
+            JSA: { '$regex': req.query.jsa || '' },
+            content: { '$regex': req.query.content || '' }
+        }
     }
+
     if (req.query.userId) {
         paramsQuery.userId = { '$in': req.query.userId.split(',') }
     }
@@ -118,9 +128,9 @@ router.post('/', verify, async (req, res) => {
     let groupNumber;
     if (groupName === "Tự Động" || groupName === "Kiểm Nhiệt") {
         groupNumber = 2;
-    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine" ) {
+    } else if (groupName === "Thiết bị phụ" || groupName === "HRSG-BOP" || groupName === "Tổ Turbine") {
         groupNumber = 4;
-    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động" ) {
+    } else if (groupName === "Máy Tĩnh" || groupName === "Máy Động") {
         groupNumber = 3;
     }
     console.log(groupNumber)
@@ -128,10 +138,10 @@ router.post('/', verify, async (req, res) => {
     if (error) {
         return res.status(400).json(error.details[0].message);
     }
-    let lastWo = await bptc.findOne({groupNumber:String(groupNumber)}, {}, { sort: { 'date': -1 } }, function (err, bptc) {
+    let lastWo = await bptc.findOne({ groupNumber: String(groupNumber) }, {}, { sort: { 'date': -1 } }, function (err, bptc) {
         return bptc;
     });
-    console.log("lastWo " + lastWo )
+    console.log("lastWo " + lastWo)
     let pct = lastWo ? Number(lastWo.BPTC.split("/")[0]) + 1 : '1';
     if (pct < 10) {
         pctT = "00" + pct;
