@@ -22,6 +22,9 @@ const BptcSchema = new Schema({
     note: {
         type: String,
     },
+    groupNumber: {
+        type: String,
+    },
     date: {
         type: Date,
         default: Date.now
