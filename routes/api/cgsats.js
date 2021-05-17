@@ -3,7 +3,7 @@ const router = express.Router();
 const { cgsatValidation } = require('../../validation')
 const verify = require('../verifyToken');
 // cgsat Model
-const cgsat = require('../../models/cgsat');
+const cgsat = require('../../models/Cgsat');
 const Tool = require('../../models/Tool');
 const TOKEN_SECRET = require('../../config/secretToken').secretToken;
 const jwt = require('jsonwebtoken');
