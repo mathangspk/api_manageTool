@@ -70,7 +70,8 @@ router.post("/register", async (req, res) => {
 })
 //login
 router.post('/login', async (req, res) => {
-  //console.log('login')
+  console.log('login')
+  console.log(req.body)
   //let validate the data before we a user
   try {
     const { error } = loginValidation(req.body);
