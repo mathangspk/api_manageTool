@@ -72,33 +72,37 @@ router.post("/register", async (req, res) => {
 router.post('/login', async (req, res) => {
   //console.log('login')
   //let validate the data before we a user
-  const { error } = loginValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  try {
+    const { error } = loginValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  //checking if the user is already in the database
-  const user = await User.findOne({ email: req.body.email });
-  //console.log(user);
-  if (!user) return res.status(400).send('Email is not already exist');
-  //password is correct
-  const validPass = await bcrypt.compare(req.body.password, user.password);
-  if (!validPass) return res.status(400).send('Invalid password');
+    //checking if the user is already in the database
+    const user = await User.findOne({ email: req.body.email });
+    //console.log(user);
+    if (!user) return res.status(400).send('Email is not already exist');
+    //password is correct
+    const validPass = await bcrypt.compare(req.body.password, user.password);
+    if (!validPass) return res.status(400).send('Invalid password');
 
-  //create and assign a token
-  const token = jwt.sign({ _id: user._id, admin: user.admin }, TOKEN_SECRET);
-  //console.log(token)
-  res.status(200).json({
-    token,
-    user: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      group: user.group,
-      department: user.department,
-      admin: user.admin,
-      pkt: req.body.pkt
-    }
-  });
+    //create and assign a token
+    const token = jwt.sign({ _id: user._id, admin: user.admin }, TOKEN_SECRET);
+    //console.log(token)
+    res.status(200).json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        group: user.group,
+        department: user.department,
+        admin: user.admin,
+        pkt: req.body.pkt
+      }
+    });
+  } catch (err) {
+    res.json({ message: err });
+  }
   //res.header('auth-token', token).send(token);
   //res.send('login')
 })
