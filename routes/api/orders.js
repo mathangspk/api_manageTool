@@ -46,6 +46,65 @@ router.get('', verify, async (req, res) => {
 //@route GeT api/orders
 //@desc Get all orders
 //@access Public
+
+router.get('/dashboard', verify, async (req, res) => {
+    let status = ['START', 'READY', 'IN_PROGRESS', 'IN_PROGRESS_NO_TOOl', 'IN_PROGRESS_HAVE_TOOl', 'COMPLETE', 'CLOSE']
+    var obj = {};
+    var myarray = [];
+
+    const promises = await status.map(async function (status) {
+
+        let paramsSummarySTARTNow = {
+            status: status,
+            PCT: { '$regex': req.query.pct }
+        }
+        let countKN = 0;
+        let countTD = 0;
+        let countMT = 0;
+        let countMD = 0;
+        let countHRSG = 0;
+        let countTBP = 0;
+        let countTB = 0;
+
+        let start = await Order.find(paramsSummarySTARTNow).populate("userId", "-password -__v -date -name -email -phone -admin")
+            .sort({ date: -1 }).exec()
+        start.map(function (start) {
+            if (start.userId.group === "Kiểm Nhiệt") {
+                countKN++;
+            }
+            else if (start.userId.group === "Tự Động") {
+                countTD++;
+            }
+            else if (start.userId.group === "Máy Động") {
+                countMD++;
+            }
+            else if (start.userId.group === "Máy Tĩnh") {
+                countMT++;
+            }
+            else if (start.userId.group === "Thiết bị phụ") {
+                countTBP++;
+            }
+            else if (start.userId.group === "HRSG-BOP") {
+                countHRSG++;
+            }
+            else if (start.userId.group === "Tổ Turbine") {
+                countTB++;
+            }
+        })
+        obj = { status: status, KN: countKN, TD: countTD, MT: countMT, MD: countMD, HRSGBOP: countHRSG, TBP: countTBP, TB: countTB }
+        myarray.push(obj)
+        return myarray[myarray.length - 1]
+    })
+    var result = await Promise.all(promises)
+    //result = result[result.length - 1];
+    //console.log('result: ', result)
+    res.status(200).json(
+        {
+            Data: { Row: result },
+            Status: { StatusCode: 200, Message: 'OK' }
+        }
+    )
+})
 router.get('/search', verify, async (req, res) => {
     let token = req.headers['auth-token']
     console.log(req.query)
@@ -66,6 +125,7 @@ router.get('/search', verify, async (req, res) => {
         .countDocuments({}, (err, count) => {
             return count;
         });
+
     await Order.find(paramsQuery)
         .skip(skip).limit(limit).populate("userId", "-password -__v -date")
         .sort({ date: -1 })
@@ -122,7 +182,7 @@ router.post('/', verify, async (req, res) => {
     } else if (pct >= 10 && pct < 100) {
         pctT = "0" + pct;
     } else pctT = pct;
-    
+
     //console.log("pct: " + pctT)
     const newOrder = new Order({
         userId: req.body.userId,
