@@ -48,7 +48,7 @@ router.get('', verify, async (req, res) => {
 //@access Public
 
 router.get('/dashboard', verify, async (req, res) => {
-    let status = ['START', 'READY', 'IN_PROGRESS', 'INPRG NO TOOL', 'IN_PROGRESS_HAVE_TOOl', 'COMPLETE', 'CLOSE']
+    let status = ['START', 'READY', 'IN_PROGRESS', 'INPRG NO TOOL', 'INPRG HAVE TOOL', 'COMPLETE', 'CLOSE']
     var obj = {};
     var myarray = [];
 
