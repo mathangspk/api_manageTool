@@ -124,7 +124,7 @@ router.post('/', verify, async (req, res) => {
     const newBbdgkt = new bbdgkt({
         userId: req.body.userId,
         WO: req.body.WO,
-        BBDGKT: pctT + "/ BBDGKT-CNCM." + groupNumber,
+        BBDGKT: pctT + "/ ĐGKT-CNCM." + groupNumber,
         note: req.body.note,
         content: req.body.content,
         time: req.body.time
